@@ -1,0 +1,164 @@
+{
+  "project_info": {
+    "project_number": "877795668080",
+    "firebase_url": "https://animal-f6c09.firebaseio.com",
+    "project_id": "animal-f6c09",
+    "storage_bucket": "animal-f6c09.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:877795668080:android:f23247be86d89424",
+        "android_client_info": {
+          "package_name": "com.untaek.animal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "877795668080-fcp4i0ncdc2ad5c0t2vjplu7bpmv7n71.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.untaek.animal",
+            "certificate_hash": "3ce697a751c5f0fc03c8693ee154ed2b8e770194"
+          }
+        },
+        {
+          "client_id": "877795668080-bsa0tebepnkd3smk1bh8ei30s3ssott4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQdsGy95KCqejpmXA5RMvVB_toxr2hEy8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "877795668080-bsa0tebepnkd3smk1bh8ei30s3ssott4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "877795668080-er77hqah682p90vjf0bqskuaa9hge2hq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.untaek.animal"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:877795668080:android:3510bb8bb0d9f153",
+        "android_client_info": {
+          "package_name": "io.untaek.animal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "877795668080-uk8oi2n4bibtn2bo8s5fpm4nmrqh9c3d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.untaek.animal",
+            "certificate_hash": "3ce697a751c5f0fc03c8693ee154ed2b8e770194"
+          }
+        },
+        {
+          "client_id": "877795668080-bsa0tebepnkd3smk1bh8ei30s3ssott4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQdsGy95KCqejpmXA5RMvVB_toxr2hEy8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "877795668080-bsa0tebepnkd3smk1bh8ei30s3ssott4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "877795668080-er77hqah682p90vjf0bqskuaa9hge2hq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.untaek.animal"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:877795668080:android:b4c1b784706112f8",
+        "android_client_info": {
+          "package_name": "io.untaek.animal_new"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "877795668080-cqiuos3dldflnodv3dngqc191h7mehp7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.untaek.animal_new",
+            "certificate_hash": "3ce697a751c5f0fc03c8693ee154ed2b8e770194"
+          }
+        },
+        {
+          "client_id": "877795668080-bsa0tebepnkd3smk1bh8ei30s3ssott4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQdsGy95KCqejpmXA5RMvVB_toxr2hEy8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "877795668080-bsa0tebepnkd3smk1bh8ei30s3ssott4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "877795668080-er77hqah682p90vjf0bqskuaa9hge2hq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.untaek.animal"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
