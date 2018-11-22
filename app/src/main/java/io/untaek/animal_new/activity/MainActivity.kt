@@ -1,11 +1,11 @@
-package io.untaek.animal_new.activities
+package io.untaek.animal_new.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import io.untaek.animal_new.R
 import io.untaek.animal_new.databinding.ActivityMainBinding
-import io.untaek.animal_new.tabs.MainFragmentAdapter
+import io.untaek.animal_new.tab.MainFragmentAdapter
 import me.majiajie.pagerbottomtabstrip.item.BaseTabItem
 import me.majiajie.pagerbottomtabstrip.item.NormalItemView
 

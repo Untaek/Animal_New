@@ -1,4 +1,4 @@
-package io.untaek.animal_new.tabs
+package io.untaek.animal_new.tab
 
 import androidx.fragment.app.Fragment
 
