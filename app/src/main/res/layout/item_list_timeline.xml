@@ -9,6 +9,7 @@
             android:layout_height="wrap_content">
 
         <ImageView
+                url="@{post.content.url}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="100dp" android:id="@+id/imageView" app:layout_constraintTop_toTopOf="parent"
