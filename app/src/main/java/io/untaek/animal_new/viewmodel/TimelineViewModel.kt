@@ -17,5 +17,18 @@ class TimelineViewModel: ViewModel() {
         add(Post("haha", "1sd23", "hello", Date(), Content(url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqK9wO9Xt8vYKdLlI2ZnYUjbLLicNwAIEaZEt47joX09DwWL5r")))
         add(Post("haha", "1sd23", "hello", Date(), Content(url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqK9wO9Xt8vYKdLlI2ZnYUjbLLicNwAIEaZEt47joX09DwWL5r")))
         add(Post("haha", "1sd23", "hello", Date(), Content(url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqK9wO9Xt8vYKdLlI2ZnYUjbLLicNwAIEaZEt47joX09DwWL5r")))
+        add(Post("haha", "1sd23", "hello", Date(), Content(url = "https://img.purch.com/w/660/aHR0cDovL3d3dy5saXZlc2NpZW5jZS5jb20vaW1hZ2VzL2kvMDAwLzA4OC85MTEvb3JpZ2luYWwvZ29sZGVuLXJldHJpZXZlci1wdXBweS5qcGVn")))
+        add(Post("haha", "1sd23", "hello", Date(), Content(url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqK9wO9Xt8vYKdLlI2ZnYUjbLLicNwAIEaZEt47joX09DwWL5r")))
+        add(Post("haha", "1sd23", "hello", Date(), Content(url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqK9wO9Xt8vYKdLlI2ZnYUjbLLicNwAIEaZEt47joX09DwWL5r")))
+        add(Post("haha", "1sd23", "hello", Date(), Content(url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqK9wO9Xt8vYKdLlI2ZnYUjbLLicNwAIEaZEt47joX09DwWL5r")))
+        add(Post("haha", "1sd23", "hello", Date(), Content(url = "https://img.purch.com/w/660/aHR0cDovL3d3dy5saXZlc2NpZW5jZS5jb20vaW1hZ2VzL2kvMDAwLzA4OC85MTEvb3JpZ2luYWwvZ29sZGVuLXJldHJpZXZlci1wdXBweS5qcGVn")))
+        add(Post("haha", "1sd23", "hello", Date(), Content(url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqK9wO9Xt8vYKdLlI2ZnYUjbLLicNwAIEaZEt47joX09DwWL5r")))
+        add(Post("haha", "1sd23", "hello", Date(), Content(url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqK9wO9Xt8vYKdLlI2ZnYUjbLLicNwAIEaZEt47joX09DwWL5r")))
+        add(Post("haha", "1sd23", "hello", Date(), Content(url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqK9wO9Xt8vYKdLlI2ZnYUjbLLicNwAIEaZEt47joX09DwWL5r")))
+        add(Post("haha", "1sd23", "hello", Date(), Content(url = "https://img.purch.com/w/660/aHR0cDovL3d3dy5saXZlc2NpZW5jZS5jb20vaW1hZ2VzL2kvMDAwLzA4OC85MTEvb3JpZ2luYWwvZ29sZGVuLXJldHJpZXZlci1wdXBweS5qcGVn")))
+        add(Post("haha", "1sd23", "hello", Date(), Content(url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqK9wO9Xt8vYKdLlI2ZnYUjbLLicNwAIEaZEt47joX09DwWL5r")))
+        add(Post("haha", "1sd23", "hello", Date(), Content(url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqK9wO9Xt8vYKdLlI2ZnYUjbLLicNwAIEaZEt47joX09DwWL5r")))
+        add(Post("haha", "1sd23", "hello", Date(), Content(url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqK9wO9Xt8vYKdLlI2ZnYUjbLLicNwAIEaZEt47joX09DwWL5r")))
+
     }
 }
