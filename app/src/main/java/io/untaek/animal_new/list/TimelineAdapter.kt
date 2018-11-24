@@ -1,5 +1,6 @@
 package io.untaek.animal_new.list
 
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
+import io.untaek.animal_new.activity.PostDetailActivity
+import io.untaek.animal_new.activity.UserDetailActivity
 import io.untaek.animal_new.databinding.ItemListTimelineBinding
 import io.untaek.animal_new.type.Post
 import kotlin.collections.ArrayList
@@ -53,12 +56,22 @@ class TimelineAdapter: RecyclerView.Adapter<TimelineAdapter.ViewHolder>() {
                     val finish = System.currentTimeMillis() - start
                     Toast.makeText(view.context, "${it.id}, it takes $finish ms", Toast.LENGTH_SHORT).show()
                 }
+
+            val intent = Intent(view.context, UserDetailActivity::class.java).apply {
+                putExtra("user", post.user)
+            }
+            view.context.startActivity(intent)
         }
         fun onClickLike(view: View, post: Post) {
             Toast.makeText(view.context, "onClickLike", Toast.LENGTH_SHORT).show()
         }
         fun onClickContent(view: View, post: Post) {
             Toast.makeText(view.context, "onClickContent", Toast.LENGTH_SHORT).show()
+
+            val intent = Intent(view.context, PostDetailActivity::class.java).apply {
+                putExtra("post", post)
+            }
+            view.context.startActivity(intent)
         }
     }
 
