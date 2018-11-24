@@ -1,25 +1,62 @@
 package io.untaek.animal_new
 
+import android.app.Activity
+import android.graphics.Point
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.databinding.ObservableArrayList
+import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
+import com.squareup.picasso.Transformation
 import io.untaek.animal_new.list.TimelineAdapter
+import io.untaek.animal_new.type.Content
 import io.untaek.animal_new.type.Post
+import java.lang.Exception
 import java.util.*
 
-@BindingAdapter("binding")
-fun bind(recyclerView: RecyclerView, items: ObservableArrayList<Post>){
-    val adapter: TimelineAdapter = recyclerView.adapter as? TimelineAdapter ?: TimelineAdapter()
-    adapter.setItems(items)
+/**
+ * Does not work.
+ */
+//@BindingAdapter("binding")
+//fun bind(recyclerView: RecyclerView, items: LiveData<List<Post>>){
+//    val adapter: TimelineAdapter = recyclerView.adapter as? TimelineAdapter ?: TimelineAdapter()
+//
+//}
+
+@BindingAdapter("user_image")
+fun loadUserImage(imageView: ImageView, url: String) {
+    Glide.with(imageView)
+        .load(url)
+        .apply(RequestOptions().circleCrop())
+        .thumbnail(0.1f)
+        .into(imageView)
 }
 
-@BindingAdapter("url")
-fun load(imageView: ImageView, url: String) {
-    Picasso.get().load(url).into(imageView)
+@BindingAdapter("content")
+fun load(imageView: ImageView, content: Content) {
+    val screen = Point().also { (imageView.context as Activity).windowManager.defaultDisplay.getSize(it) }
+    val start = System.currentTimeMillis()
+    Picasso.get()
+        .load(content.url)
+        .resize(screen.x, 800)
+        .centerCrop()
+        .error(R.drawable.ic_launcher_foreground)
+        .into(imageView, object : Callback{
+            override fun onSuccess() {
+                Log.d("Utils", "image Load finished ${System.currentTimeMillis() - start}")
+            }
+
+            override fun onError(e: Exception?) {
+
+            }
+        })
 }
 
 @BindingAdapter("time")

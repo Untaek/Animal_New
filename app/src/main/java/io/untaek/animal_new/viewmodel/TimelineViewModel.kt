@@ -2,12 +2,16 @@ package io.untaek.animal_new.viewmodel
 
 import android.util.Log
 import androidx.databinding.ObservableArrayList
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import io.untaek.animal_new.timeCalculateFunction
-import io.untaek.animal_new.type.Content
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.QuerySnapshot
+import io.untaek.animal_new.Fire
+import io.untaek.animal_new.type.Dummy
 import io.untaek.animal_new.type.Post
-import io.untaek.animal_new.type.User
-import java.util.*
+import java.lang.Exception
+import kotlin.collections.ArrayList
 
 class TimelineViewModel: ViewModel() {
 
@@ -15,22 +19,29 @@ class TimelineViewModel: ViewModel() {
         Log.d("TimelineViewModel", "Created ${this.hashCode()}")
     }
     val list = ObservableArrayList<Post>().apply {
-        add(Post("postId", User(), "hello", Date(), Content(url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqK9wO9Xt8vYKdLlI2ZnYUjbLLicNwAIEaZEt47joX09DwWL5r")))
-        add(Post("postId", User(), "hello",  Date(), Content(url = "https://img.purch.com/w/660/aHR0cDovL3d3dy5saXZlc2NpZW5jZS5jb20vaW1hZ2VzL2kvMDAwLzA4OC85MTEvb3JpZ2luYWwvZ29sZGVuLXJldHJpZXZlci1wdXBweS5qcGVn")))
-        add(Post("postId", User(), "hello",  Date(), Content(url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqK9wO9Xt8vYKdLlI2ZnYUjbLLicNwAIEaZEt47joX09DwWL5r")))
-        add(Post("postId", User(), "hello",  Date(), Content(url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqK9wO9Xt8vYKdLlI2ZnYUjbLLicNwAIEaZEt47joX09DwWL5r")))
-        add(Post("postId", User(), "hello", Date(), Content(url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqK9wO9Xt8vYKdLlI2ZnYUjbLLicNwAIEaZEt47joX09DwWL5r")))
-        add(Post("postId", User(), "hello",  Date(), Content(url = "https://img.purch.com/w/660/aHR0cDovL3d3dy5saXZlc2NpZW5jZS5jb20vaW1hZ2VzL2kvMDAwLzA4OC85MTEvb3JpZ2luYWwvZ29sZGVuLXJldHJpZXZlci1wdXBweS5qcGVn")))
-        add(Post("postId", User(), "hello",  Date(), Content(url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqK9wO9Xt8vYKdLlI2ZnYUjbLLicNwAIEaZEt47joX09DwWL5r")))
-        add(Post("postId", User(), "hello",  Date(), Content(url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqK9wO9Xt8vYKdLlI2ZnYUjbLLicNwAIEaZEt47joX09DwWL5r")))
-        add(Post("postId", User(), "hello", Date(), Content(url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqK9wO9Xt8vYKdLlI2ZnYUjbLLicNwAIEaZEt47joX09DwWL5r")))
-        add(Post("postId", User(), "hello",  Date(), Content(url = "https://img.purch.com/w/660/aHR0cDovL3d3dy5saXZlc2NpZW5jZS5jb20vaW1hZ2VzL2kvMDAwLzA4OC85MTEvb3JpZ2luYWwvZ29sZGVuLXJldHJpZXZlci1wdXBweS5qcGVn")))
-        add(Post("postId", User(), "hello",  Date(), Content(url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqK9wO9Xt8vYKdLlI2ZnYUjbLLicNwAIEaZEt47joX09DwWL5r")))
-        add(Post("postId", User(), "hello",  Date(), Content(url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqK9wO9Xt8vYKdLlI2ZnYUjbLLicNwAIEaZEt47joX09DwWL5r")))
-        add(Post("postId", User(), "hello", Date(), Content(url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqK9wO9Xt8vYKdLlI2ZnYUjbLLicNwAIEaZEt47joX09DwWL5r")))
-        add(Post("postId", User(), "hello",  Date(), Content(url = "https://img.purch.com/w/660/aHR0cDovL3d3dy5saXZlc2NpZW5jZS5jb20vaW1hZ2VzL2kvMDAwLzA4OC85MTEvb3JpZ2luYWwvZ29sZGVuLXJldHJpZXZlci1wdXBweS5qcGVn")))
-        add(Post("postId", User(), "hello",  Date(), Content(url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqK9wO9Xt8vYKdLlI2ZnYUjbLLicNwAIEaZEt47joX09DwWL5r")))
-        add(Post("postId", User(), "hello",  Date(), Content(url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqK9wO9Xt8vYKdLlI2ZnYUjbLLicNwAIEaZEt47joX09DwWL5r")))
+        add(Dummy.post1)
+        add(Dummy.post2)
+        add(Dummy.post1)
+        add(Dummy.post1)
+        add(Dummy.post2)
+        add(Dummy.post2)
+        add(Dummy.post1)
+        add(Dummy.post2)
+        add(Dummy.post1)
+        add(Dummy.post1)
+    }
 
+    val timeline = MutableLiveData<List<Post>>()
+    val lastSeen = MutableLiveData<DocumentSnapshot>()
+
+    fun loadPosts(limit: Int, lastSeen: DocumentSnapshot?): LiveData<List<Post>> {
+        Fire.loadPosts(limit, lastSeen, { posts, last ->
+            this@TimelineViewModel.lastSeen.postValue(last)
+            timeline.postValue(posts)
+        }, {
+
+        })
+
+        return timeline
     }
 }

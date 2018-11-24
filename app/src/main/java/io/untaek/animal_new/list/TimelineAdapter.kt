@@ -1,25 +1,23 @@
 package io.untaek.animal_new.list
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.ObservableArrayList
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.firestore.FirebaseFirestore
 import io.untaek.animal_new.databinding.ItemListTimelineBinding
-import io.untaek.animal_new.timeCalculateFunction
 import io.untaek.animal_new.type.Post
-import java.util.*
+import kotlin.collections.ArrayList
 
 class TimelineAdapter: RecyclerView.Adapter<TimelineAdapter.ViewHolder>() {
-    private lateinit var binding: ItemListTimelineBinding
-    private var items: ObservableArrayList<Post> = ObservableArrayList()
-    fun dateCalculator (time : Date) : String{
-
-        return "aa"
-    }
+    private var items: List<Post> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimelineAdapter.ViewHolder {
-        binding = ItemListTimelineBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemListTimelineBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply {
+            handler = Handler()
+        }
         return ViewHolder(binding)
     }
 
@@ -31,7 +29,7 @@ class TimelineAdapter: RecyclerView.Adapter<TimelineAdapter.ViewHolder>() {
         holder.bind(items[position])
     }
 
-    fun setItems(list: ObservableArrayList<Post>) {
+    fun setItems(list: List<Post>) {
         items = list
         notifyDataSetChanged()
     }
@@ -41,4 +39,27 @@ class TimelineAdapter: RecyclerView.Adapter<TimelineAdapter.ViewHolder>() {
             binding.post = item
         }
     }
+
+    class Handler {
+        fun onClickUserImageAndName(view: View, post: Post) {
+            Toast.makeText(view.context, "onClickUserImageAndName", Toast.LENGTH_SHORT).show()
+            val start = System.currentTimeMillis()
+
+            FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(post.user.id)
+                .get()
+                .addOnSuccessListener {
+                    val finish = System.currentTimeMillis() - start
+                    Toast.makeText(view.context, "${it.id}, it takes $finish ms", Toast.LENGTH_SHORT).show()
+                }
+        }
+        fun onClickLike(view: View, post: Post) {
+            Toast.makeText(view.context, "onClickLike", Toast.LENGTH_SHORT).show()
+        }
+        fun onClickContent(view: View, post: Post) {
+            Toast.makeText(view.context, "onClickContent", Toast.LENGTH_SHORT).show()
+        }
+    }
+
 }
