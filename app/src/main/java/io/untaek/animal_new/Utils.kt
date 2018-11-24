@@ -11,6 +11,8 @@ import androidx.databinding.ObservableArrayList
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
@@ -30,33 +32,42 @@ import java.util.*
 //
 //}
 
+val userImageOptions = RequestOptions()
+    .diskCacheStrategy(DiskCacheStrategy.ALL)
+    .circleCrop()
+
+fun contentImageOptions(x: Int, y: Int) = RequestOptions()
+    .diskCacheStrategy(DiskCacheStrategy.ALL)
+    .override(x, y)
+    .centerCrop()
+
 @BindingAdapter("user_image")
 fun loadUserImage(imageView: ImageView, url: String) {
+    val options= userImageOptions
+
     Glide.with(imageView)
         .load(url)
-        .apply(RequestOptions().circleCrop())
+        .transition(DrawableTransitionOptions.withCrossFade())
+        .apply(options)
         .thumbnail(0.1f)
         .into(imageView)
 }
 
 @BindingAdapter("content")
 fun load(imageView: ImageView, content: Content) {
+    /**
+     * content.mime could be like a image/jpeg or image/png or image/gif etc.
+     */
+    val type = content.mime.split("/")[1]
     val screen = Point().also { (imageView.context as Activity).windowManager.defaultDisplay.getSize(it) }
-    val start = System.currentTimeMillis()
-    Picasso.get()
+    val options = contentImageOptions(screen.x, 800)
+
+    Glide.with(imageView).also { if (type == "gif") it.asGif() }
         .load(content.url)
-        .resize(screen.x, 800)
-        .centerCrop()
-        .error(R.drawable.ic_launcher_foreground)
-        .into(imageView, object : Callback{
-            override fun onSuccess() {
-                Log.d("Utils", "image Load finished ${System.currentTimeMillis() - start}")
-            }
-
-            override fun onError(e: Exception?) {
-
-            }
-        })
+        .transition(DrawableTransitionOptions.withCrossFade(500))
+        .apply(options)
+        .thumbnail(0.1f)
+        .into(imageView)
 }
 
 @BindingAdapter("time")
