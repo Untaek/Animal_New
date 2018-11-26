@@ -23,10 +23,10 @@ class TimelineAdapter(fragmentActivity: FragmentActivity): RecyclerView.Adapter<
     private var items = listOf<Post>()
 
     init {
-         vm.loadPosts(20, null)
-             .observe(fragmentActivity, Observer {
-             setItems(it)
-         })
+        vm.timeline.observeForever {
+            setItems(it)
+        }
+        vm.loadPosts(20, null)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimelineAdapter.ViewHolder {

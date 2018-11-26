@@ -49,7 +49,7 @@ fun loadUserImage(imageView: ImageView, url: String) {
         .load(url)
         .transition(DrawableTransitionOptions.withCrossFade())
         .apply(options)
-        .thumbnail(0.1f)
+        //.thumbnail(0.1f)
         .into(imageView)
 }
 
@@ -73,7 +73,7 @@ fun load(imageView: ImageView, content: Content) {
 @BindingAdapter("time")
 fun timeCalculateFunction(textView: TextView, time: Date) {
     val result: String
-    val gc = GregorianCalendar(TimeZone.getTimeZone("Asia/Soul"))
+    val gc = GregorianCalendar(TimeZone.getTimeZone("Asia/Seoul"))
     val gc_year = gc.get(GregorianCalendar.YEAR)
     val gc_month = gc.get(GregorianCalendar.MONTH)
     val gc_date = gc.get(GregorianCalendar.DATE)

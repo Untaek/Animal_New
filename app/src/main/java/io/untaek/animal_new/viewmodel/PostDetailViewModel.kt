@@ -1,21 +1,56 @@
 package io.untaek.animal_new.viewmodel
 
-import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import io.untaek.animal_new.type.Comment
 import io.untaek.animal_new.type.Post
+import io.untaek.animal_new.type.User
+import java.util.*
 
-class PostDetailViewModel(val post: Post): ViewModel() {
-    companion object {
-        const val TAG = "PostDetailViewModel"
+class PostDetailViewModel(val post: Post): BaseViewModel() {
+    val comments = MutableLiveData<ArrayList<Comment>>()
+
+    fun loadDummyComments() {
+        comments.postValue(arrayListOf(
+            Comment(User(), "comment comment comment this is comment", Date()),
+            Comment(User(), "comment comment comment this is comment", Date()),
+            Comment(User(), "comment comment comment this is comment", Date()),
+            Comment(User(), "comment comment comment this is comment", Date()),
+            Comment(User(), "comment comment comment this is comment", Date()),
+            Comment(User(), "comment comment comment this is comment", Date()),
+            Comment(User(), "comment comment comment this is comment", Date()),
+            Comment(User(), "comment comment comment this is comment", Date()),
+            Comment(User(), "comment comment comment this is comment", Date()),
+            Comment(User(), "comment comment comment this is comment", Date()),
+            Comment(User(), "comment comment comment this is comment", Date()),
+            Comment(User(), "comment comment comment this is comment", Date()),
+            Comment(User(), "comment comment comment this is comment", Date())
+        ))
     }
-    init {
-        Log.d(TAG, "Created ${this.hashCode()}")
+
+    fun loadComments() {
+        FirebaseFirestore.getInstance()
+            .collection("posts")
+            .document(post.id)
+            .collection("comments")
+            .orderBy("time_stamp", Query.Direction.ASCENDING)
+            .limit(10)
+            .get()
+            .addOnSuccessListener {
+                comments.postValue(it.toObjects(Comment::class.java) as ArrayList<Comment>)
+            }
+            .addOnFailureListener {
+                this.logException(it)
+            }
+    }
+
+    class PostDetailViewModelFactory(val post: Post): ViewModelProvider.Factory {
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            return modelClass.getConstructor(Post::class.java).newInstance(post)
+        }
     }
 }
 
-class PostDetailViewModelFactory(val post: Post): ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return modelClass.getConstructor(Post::class.java).newInstance(post)
-    }
-}

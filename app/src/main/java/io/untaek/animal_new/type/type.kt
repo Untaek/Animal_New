@@ -35,3 +35,9 @@ data class UserDetail(
     val total_followers: Int = 0,
     val follows: HashMap<String, String> = hashMapOf()
 ): Serializable
+
+data class Comment(
+    val user: User = User(),
+    val text: String = "",
+    val time_stamp: Date = Date()
+)

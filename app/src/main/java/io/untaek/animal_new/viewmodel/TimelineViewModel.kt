@@ -13,14 +13,8 @@ import io.untaek.animal_new.type.Post
 import java.lang.Exception
 import kotlin.collections.ArrayList
 
-class TimelineViewModel: ViewModel() {
-    companion object {
-        const val TAG = "TimelineViewModel"
-    }
+class TimelineViewModel: BaseViewModel() {
 
-    init {
-        Log.d(TAG, "Created ${this.hashCode()}")
-    }
     val list = ObservableArrayList<Post>().apply {
         add(Dummy.post1)
         add(Dummy.post2)

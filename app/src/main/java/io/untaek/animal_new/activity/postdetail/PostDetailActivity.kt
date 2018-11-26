@@ -8,7 +8,6 @@ import io.untaek.animal_new.R
 import io.untaek.animal_new.databinding.ActivityPostDetailBinding
 import io.untaek.animal_new.type.Post
 import io.untaek.animal_new.viewmodel.PostDetailViewModel
-import io.untaek.animal_new.viewmodel.PostDetailViewModelFactory
 
 class PostDetailActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,6 +18,12 @@ class PostDetailActivity: AppCompatActivity() {
         val post = intent.getSerializableExtra("post") as Post
 
         binding.viewPager.adapter = PostDetailFragmentAdapter(supportFragmentManager)
-        binding.vm = ViewModelProviders.of(this, PostDetailViewModelFactory(post)).get(PostDetailViewModel::class.java)
+        binding.vm = ViewModelProviders.of(this, PostDetailViewModel.PostDetailViewModelFactory(post)).get(PostDetailViewModel::class.java)
+
+        /**
+         * Initialize comments list
+         */
+        //binding.vm?.loadComments()
+        binding.vm?.loadDummyComments()
     }
 }
