@@ -8,7 +8,7 @@
             android:layout_height="match_parent"
             tools:context=".activity.MainActivity">
 
-        <io.untaek.animal_new.tab.MainViewPager
+        <io.untaek.animal_new.tab.tool.MainViewPager
                 android:id="@+id/viewPager"
                 android:layout_width="0dp"
                 android:layout_height="0dp"

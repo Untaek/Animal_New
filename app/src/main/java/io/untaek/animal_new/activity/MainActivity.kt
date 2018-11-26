@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import io.untaek.animal_new.R
 import io.untaek.animal_new.databinding.ActivityMainBinding
-import io.untaek.animal_new.tab.MainFragmentAdapter
+import io.untaek.animal_new.tab.tool.MainFragmentAdapter
 import me.majiajie.pagerbottomtabstrip.item.BaseTabItem
 import me.majiajie.pagerbottomtabstrip.item.NormalItemView
 

@@ -1,12 +1,12 @@
-package io.untaek.animal_new.tab
+package io.untaek.animal_new.tab.fragment
 
 import androidx.fragment.app.Fragment
 
-class RankFragment: Fragment() {
+class UploadFragment: Fragment() {
 
     companion object {
         fun instance(): Fragment {
-            return RankFragment()
+            return UploadFragment()
         }
     }
 }

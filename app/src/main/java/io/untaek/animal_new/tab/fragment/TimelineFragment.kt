@@ -1,4 +1,4 @@
-package io.untaek.animal_new.tab
+package io.untaek.animal_new.tab.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.untaek.animal_new.databinding.TabTimelineBinding
 import io.untaek.animal_new.list.TimelineAdapter
-import io.untaek.animal_new.type.Post
+import io.untaek.animal_new.list.TimelineDecorator
 import io.untaek.animal_new.viewmodel.TimelineViewModel
 
 
@@ -41,6 +41,7 @@ class TimelineFragment: Fragment() {
 
         binding.recyclerView.layoutManager = layoutManager
         binding.recyclerView.adapter = adapter
+        binding.recyclerView.addItemDecoration(TimelineDecorator())
 
         binding.vm?.loadPosts(20, null)?.observe(this, Observer {
             adapter.setItems(it)
