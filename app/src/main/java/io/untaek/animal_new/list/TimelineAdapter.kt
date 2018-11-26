@@ -1,25 +1,37 @@
 package io.untaek.animal_new.list
 
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
-import io.untaek.animal_new.activity.PostDetailActivity
+import io.untaek.animal_new.activity.postdetail.PostDetailActivity
 import io.untaek.animal_new.activity.UserDetailActivity
 import io.untaek.animal_new.databinding.ItemListTimelineBinding
 import io.untaek.animal_new.type.Post
+import io.untaek.animal_new.viewmodel.TimelineViewModel
 import kotlin.collections.ArrayList
 
-class TimelineAdapter: RecyclerView.Adapter<TimelineAdapter.ViewHolder>() {
-    private var items: List<Post> = ArrayList()
+class TimelineAdapter(fragmentActivity: FragmentActivity): RecyclerView.Adapter<TimelineAdapter.ViewHolder>() {
+
+    val vm = ViewModelProviders.of(fragmentActivity).get(TimelineViewModel::class.java)
+    private var items = listOf<Post>()
+
+    init {
+         vm.loadPosts(20, null)
+             .observe(fragmentActivity, Observer {
+             setItems(it)
+         })
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimelineAdapter.ViewHolder {
         val binding = ItemListTimelineBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply {
-            handler = Handler()
+            handler = Handler(vm)
         }
         return ViewHolder(binding)
     }
@@ -43,7 +55,8 @@ class TimelineAdapter: RecyclerView.Adapter<TimelineAdapter.ViewHolder>() {
         }
     }
 
-    class Handler {
+    class Handler(val vm: TimelineViewModel) {
+
         fun onClickUserImageAndName(view: View, post: Post) {
             Toast.makeText(view.context, "onClickUserImageAndName", Toast.LENGTH_SHORT).show()
             val start = System.currentTimeMillis()

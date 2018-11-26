@@ -14,9 +14,12 @@ import java.lang.Exception
 import kotlin.collections.ArrayList
 
 class TimelineViewModel: ViewModel() {
+    companion object {
+        const val TAG = "TimelineViewModel"
+    }
 
     init {
-        Log.d("TimelineViewModel", "Created ${this.hashCode()}")
+        Log.d(TAG, "Created ${this.hashCode()}")
     }
     val list = ObservableArrayList<Post>().apply {
         add(Dummy.post1)
@@ -32,7 +35,18 @@ class TimelineViewModel: ViewModel() {
     }
 
     val timeline = MutableLiveData<List<Post>>()
-    val lastSeen = MutableLiveData<DocumentSnapshot>()
+    private val lastSeen = MutableLiveData<DocumentSnapshot>()
+
+    var selectedPost: Post? = null
+
+    fun selectPost(post: Post) {
+        selectedPost = post
+        Log.d(TAG, selectedPost.toString())
+    }
+
+    fun likePost(post: Post) {
+
+    }
 
     fun loadPosts(limit: Int, lastSeen: DocumentSnapshot?): LiveData<List<Post>> {
         Fire.loadPosts(limit, lastSeen, { posts, last ->

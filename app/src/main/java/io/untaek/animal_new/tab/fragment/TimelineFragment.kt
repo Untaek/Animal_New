@@ -21,16 +21,13 @@ class TimelineFragment: Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        binding = TabTimelineBinding.inflate(inflater, container, false).apply {
-            vm = ViewModelProviders.of(this@TimelineFragment).get(TimelineViewModel::class.java)
-        }
-
+        binding = TabTimelineBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val adapter = TimelineAdapter()
+        val adapter = TimelineAdapter(this.requireActivity())
         val layoutManager = LinearLayoutManager(view.context, LinearLayoutManager::VERTICAL.get(), false)
         val scrollListener = object : RecyclerView.OnScrollListener(){
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -42,10 +39,6 @@ class TimelineFragment: Fragment() {
         binding.recyclerView.layoutManager = layoutManager
         binding.recyclerView.adapter = adapter
         binding.recyclerView.addItemDecoration(TimelineDecorator())
-
-        binding.vm?.loadPosts(20, null)?.observe(this, Observer {
-            adapter.setItems(it)
-        })
     }
 
     companion object {
