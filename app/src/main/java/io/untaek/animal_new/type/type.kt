@@ -6,7 +6,7 @@ import java.util.*
 import kotlin.collections.HashMap
 
 data class Post(
-    val id: String = "",
+    var id: String = "",
     val user: User = User(),
     val description: String = "",
     val time_stamp: Date = Date(),

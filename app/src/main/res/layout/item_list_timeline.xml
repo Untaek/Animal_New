@@ -4,7 +4,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
 >
     <data>
-        <variable name="handler" type="io.untaek.animal_new.list.TimelineAdapter.Handler"/>
+        <variable name="handler" type="io.untaek.animal_new.list.timeline.TimelinePageAdapter.Handler"/>
         <variable name="post" type="io.untaek.animal_new.type.Post"/>
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout

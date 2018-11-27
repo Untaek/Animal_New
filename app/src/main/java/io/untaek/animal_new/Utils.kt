@@ -2,25 +2,14 @@ package io.untaek.animal_new
 
 import android.app.Activity
 import android.graphics.Point
-import android.util.Log
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import androidx.databinding.ObservableArrayList
-import androidx.lifecycle.LiveData
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
-import com.squareup.picasso.Callback
-import com.squareup.picasso.Picasso
-import com.squareup.picasso.Transformation
-import io.untaek.animal_new.list.TimelineAdapter
 import io.untaek.animal_new.type.Content
-import io.untaek.animal_new.type.Post
-import java.lang.Exception
 import java.util.*
 
 /**

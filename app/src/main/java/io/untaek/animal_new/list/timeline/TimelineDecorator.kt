@@ -1,11 +1,11 @@
-package io.untaek.animal_new.list
+package io.untaek.animal_new.list.timeline
 
 import android.graphics.Canvas
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
-class CommentsDecoration: RecyclerView.ItemDecoration() {
+class TimelineDecorator: RecyclerView.ItemDecoration() {
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         super.onDraw(c, parent, state)
 
@@ -19,7 +19,7 @@ class CommentsDecoration: RecyclerView.ItemDecoration() {
         val last = parent.adapter?.itemCount!! - 1
 
         if(last > parent.getChildAdapterPosition(view)){
-            outRect.set(outRect.left, outRect.top, outRect.right, outRect.bottom + 12)
+            outRect.set(outRect.left, outRect.top, outRect.right, outRect.bottom + 80)
         }
     }
 }
