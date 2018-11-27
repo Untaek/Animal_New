@@ -11,9 +11,13 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
+import io.untaek.animal_new.type.Content
 import io.untaek.animal_new.type.Post
+import io.untaek.animal_new.type.Uploading
 import io.untaek.animal_new.type.UserDetail
+import io.untaek.animal_new.viewmodel.UploadViewModel
 import java.lang.Exception
+import java.util.*
 
 object Fire {
     const val POSTS = "posts"
@@ -61,18 +65,40 @@ object Fire {
     /**
      * working on
      */
-    fun uploadContent() {
-        val ref = FirebaseStorage.getInstance().getReference("image.jpg")
-        ref.putBytes(ByteArray(1))
-            .continueWith(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+    fun uploadContent(uri: Uri, vm: UploadViewModel) {
+        val uploading = Uploading(uri = uri)
+        vm.addUploadState(uploading)
+
+        val fileName = "USER_ID@${Date().time}.jpg"
+        val ref = FirebaseStorage.getInstance("gs://animal-f6c09").getReference(fileName)
+        val userRef = FirebaseFirestore.getInstance().collection(POSTS).document()
+        ref.putFile(uri)
+            .addOnProgressListener {
+                val progress = it.bytesTransferred.toFloat() / it.totalByteCount.toFloat()
+                uploading.size = it.totalByteCount
+                uploading.progress = progress
+                vm.updateUploadState(uploading)
+                Log.d("FireFire", "upload progress $progress")
+            }
+            .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                if(!task.isSuccessful){
+                    throw Exception()
+                }
                 return@Continuation ref.downloadUrl
             })
             .addOnSuccessListener {
-                val downloadUri = it.result
+                vm.removeUploadState(uploading)
+                val downloadUri = it
+                userRef.set(
+                    Post(content = Content("image/jpg", fileName, downloadUri.toString(), 1000, 1000))
+                ).addOnSuccessListener {
+                    Log.d("FireFire", "upload finished ${downloadUri.toString()}")
+                }
             }
             .addOnFailureListener {
-
+                vm.removeUploadState(uploading)
             }
+
     }
 
     fun getUserDetailById(id: String) {

@@ -30,7 +30,7 @@ class TimelinePageDataSource {
         ) {
             FirebaseFirestore.getInstance()
                 .collection("posts")
-                .orderBy("timeStamp", Query.Direction.DESCENDING)
+                //.orderBy("timeStamp", Query.Direction.DESCENDING)
                 .limit(params.requestedLoadSize.toLong())
                 .get()
                 .addOnSuccessListener {
@@ -44,7 +44,7 @@ class TimelinePageDataSource {
         ) {
             FirebaseFirestore.getInstance()
                 .collection("posts")
-                .orderBy("timeStamp", Query.Direction.DESCENDING)
+                //.orderBy("timeStamp", Query.Direction.DESCENDING)
                 .startAfter(params.key)
                 .limit(params.requestedLoadSize.toLong())
                 .get()

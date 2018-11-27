@@ -1,5 +1,6 @@
 package io.untaek.animal_new.type
 
+import android.net.Uri
 import androidx.databinding.Bindable
 import java.io.Serializable
 import java.util.*
@@ -40,4 +41,11 @@ data class Comment(
     val user: User = User(),
     val text: String = "",
     val time_stamp: Date = Date()
+)
+
+data class Uploading(
+    var progress: Float = 0f,
+    val type: String = "image",
+    var size: Long = 0,
+    val uri: Uri
 )

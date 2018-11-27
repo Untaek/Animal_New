@@ -1,8 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <attr name="icon" format="reference"/>
     <declare-styleable name="TextWithIcon">
-        <attr name="icon" format="reference"/>
+        <attr name="icon"/>
         <attr name="count" format="integer"/>
         <attr name="color" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="PickContentButton">
+        <attr name="icon"/>
+        <attr name="text" format="string"/>
+        <attr name="type" format="enum">
+            <enum name="gallery" value="0"/>
+            <enum name="camera" value="1"/>
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="UploadStatus">
+
     </declare-styleable>
 </resources>

@@ -1,7 +1,12 @@
-package io.untaek.animal_new
+package io.untaek.animal_new.util
 
+import android.Manifest
 import android.app.Activity
+import android.content.Intent
 import android.graphics.Point
+import android.net.Uri
+import android.provider.MediaStore
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
@@ -9,7 +14,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
+import io.untaek.animal_new.component.PickContentButton
 import io.untaek.animal_new.type.Content
+import io.untaek.animal_new.viewmodel.UploadViewModel
+import java.io.File
 import java.util.*
 
 /**
@@ -91,3 +99,10 @@ fun timeCalculateFunction(textView: TextView, time: Date) {
 
     textView.text = result
 }
+
+//@BindingAdapter("download")
+//fun download(view: View) {
+//    /**
+//     * TODO implementation
+//     */
+//}
