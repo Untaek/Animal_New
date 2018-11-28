@@ -14,6 +14,8 @@ class PermissionHelper {
             Manifest.permission.READ_EXTERNAL_STORAGE
         )
 
+        const val REQUEST_READ_EXTERNAL_STORAGE = 596
+
         fun allPermissions() = PERMISSIONS
 
         fun deniedPermissions(context: Context) = PERMISSIONS.filter {

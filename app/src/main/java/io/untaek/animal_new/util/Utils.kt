@@ -7,16 +7,23 @@ import android.content.Intent
 import android.graphics.Point
 import android.net.Uri
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.databinding.Bindable
 import androidx.databinding.BindingAdapter
+import androidx.databinding.BindingMethod
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import io.untaek.animal_new.component.PickContentButton
 import io.untaek.animal_new.type.Content
 import io.untaek.animal_new.viewmodel.UploadViewModel
@@ -106,10 +113,3 @@ fun timeCalculateFunction(textView: TextView, time: Date) {
     textView.text = result
 }
 
-
-//@BindingAdapter("download")
-//fun download(view: View) {
-//    /**
-//     * TODO implementation
-//     */
-//}
