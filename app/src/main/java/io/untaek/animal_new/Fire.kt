@@ -15,6 +15,7 @@ import io.untaek.animal_new.type.Content
 import io.untaek.animal_new.type.Post
 import io.untaek.animal_new.type.Uploading
 import io.untaek.animal_new.type.UserDetail
+import io.untaek.animal_new.util.ContentUtil
 import io.untaek.animal_new.viewmodel.UploadViewModel
 import java.lang.Exception
 import java.util.*
@@ -65,18 +66,23 @@ object Fire {
     /**
      * working on
      */
-    fun uploadContent(uri: Uri, vm: UploadViewModel) {
+    fun uploadContent(vm: UploadViewModel) {
+        val uri = vm.currentUri!!
+        val size = vm.currentSize!!
+        val mime = vm.currentMime!!
+
         val uploading = Uploading(uri = uri)
         vm.addUploadState(uploading)
 
         val fileName = "USER_ID@${Date().time}.jpg"
+
         val ref = FirebaseStorage.getInstance("gs://animal-f6c09").getReference(fileName)
         val userRef = FirebaseFirestore.getInstance().collection(POSTS).document()
         ref.putFile(uri)
             .addOnProgressListener {
                 val progress = it.bytesTransferred.toFloat() / it.totalByteCount.toFloat()
                 uploading.size = it.totalByteCount
-                uploading.progress = progress
+                uploading.progress = (progress * 100).toInt()
                 vm.updateUploadState(uploading)
                 Log.d("FireFire", "upload progress $progress")
             }
@@ -87,16 +93,18 @@ object Fire {
                 return@Continuation ref.downloadUrl
             })
             .addOnSuccessListener {
-                vm.removeUploadState(uploading)
                 val downloadUri = it
-                userRef.set(
-                    Post(content = Content("image/jpg", fileName, downloadUri.toString(), 1000, 1000))
-                ).addOnSuccessListener {
-                    Log.d("FireFire", "upload finished ${downloadUri.toString()}")
+
+                val content = Content(mime, fileName, downloadUri.toString(), size.second, size.first)
+
+                userRef
+                    .set(Post(content = content))
+                    .addOnSuccessListener {
+                    Log.d("FireFire", "upload finished $downloadUri")
                 }
             }
             .addOnFailureListener {
-                vm.removeUploadState(uploading)
+                //vm.removeUploadState(uploading)
             }
 
     }

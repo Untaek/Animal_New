@@ -33,11 +33,11 @@ class CommentsPageDataSource {
         ) {
             FirebaseFirestore.getInstance()
                 .collection("posts")
-                .orderBy("timeStamp", Query.Direction.DESCENDING)
+                .orderBy("time_stamp", Query.Direction.DESCENDING)
                 .limit(params.requestedLoadSize.toLong())
                 .get()
                 .addOnSuccessListener {
-                    callback.onResult(it.toObjects(Comment::class.java), null, it.documents.last())
+                    callback.onResult(it.toObjects(Comment::class.java), null, it.documents.lastOrNull())
                 }
         }
 
@@ -47,7 +47,7 @@ class CommentsPageDataSource {
         ) {
             FirebaseFirestore.getInstance()
                 .collection("posts")
-                .orderBy("timeStamp", Query.Direction.DESCENDING)
+                .orderBy("time_stamp", Query.Direction.DESCENDING)
                 .startAfter(params.key)
                 .limit(params.requestedLoadSize.toLong())
                 .get()

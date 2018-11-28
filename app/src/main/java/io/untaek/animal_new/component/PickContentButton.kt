@@ -62,7 +62,7 @@ class PickContentButton: ConstraintLayout {
         view.text.text = text
         addView(view)
     }
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     private fun createTempUri(prefix: String, suffix: String): Uri {
         val file = File.createTempFile(prefix, suffix)

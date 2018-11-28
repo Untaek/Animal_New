@@ -44,7 +44,7 @@ data class Comment(
 )
 
 data class Uploading(
-    var progress: Float = 0f,
+    var progress: Int = 0,
     val type: String = "image",
     var size: Long = 0,
     val uri: Uri

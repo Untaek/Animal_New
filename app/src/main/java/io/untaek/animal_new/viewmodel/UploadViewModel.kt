@@ -1,5 +1,6 @@
 package io.untaek.animal_new.viewmodel
 
+import android.graphics.Point
 import android.net.Uri
 import android.util.Log
 import androidx.databinding.ObservableArrayList
@@ -12,20 +13,15 @@ import io.untaek.animal_new.type.Uploading
 class UploadViewModel: BaseViewModel() {
     val uploadingState = MutableLiveData<ArrayList<Uploading>>()
     var currentUri: Uri? = null
+    var currentMime: String? = null
+    var currentSize: Pair<Int, Int>? = null
 
     init {
         uploadingState.value = arrayListOf()
-//        uploadingState.observeForever {
-//            Log.d("UploadViewModel", "Observing")
-//            it?.let {
-//                Log.d("UploadViewModel", it.toString())
-//            }
-//
-//        }
     }
 
     fun upload() {
-        Fire.uploadContent(currentUri!!, this)
+        Fire.uploadContent(this)
     }
 
     private fun <T> MutableLiveData<T>.notifyObserver() {

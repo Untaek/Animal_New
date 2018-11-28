@@ -1,14 +1,17 @@
 package io.untaek.animal_new.util
 
 import android.Manifest
+import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Point
 import android.net.Uri
 import android.provider.MediaStore
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -31,6 +34,7 @@ import java.util.*
 
 val userImageOptions = RequestOptions()
     .diskCacheStrategy(DiskCacheStrategy.ALL)
+    .override(80)
     .circleCrop()
 
 fun contentImageOptions(x: Int, y: Int) = RequestOptions()
@@ -46,7 +50,6 @@ fun loadUserImage(imageView: ImageView, url: String) {
         .load(url)
         .transition(DrawableTransitionOptions.withCrossFade())
         .apply(options)
-        //.thumbnail(0.1f)
         .into(imageView)
 }
 
@@ -57,7 +60,10 @@ fun load(imageView: ImageView, content: Content) {
      */
     val type = content.mime.split("/")[1]
     val screen = Point().also { (imageView.context as Activity).windowManager.defaultDisplay.getSize(it) }
-    val options = contentImageOptions(screen.x, 800)
+    //val options = contentImageOptions(screen.x, screen.x / content.width  * content.height)
+    val options = contentImageOptions(screen.x, content.height)
+
+    //imageView.layoutParams = ConstraintLayout.LayoutParams(screen.x, content.height)
 
     Glide.with(imageView).also { if (type == "gif") it.asGif() }
         .load(content.url)
@@ -99,6 +105,7 @@ fun timeCalculateFunction(textView: TextView, time: Date) {
 
     textView.text = result
 }
+
 
 //@BindingAdapter("download")
 //fun download(view: View) {
