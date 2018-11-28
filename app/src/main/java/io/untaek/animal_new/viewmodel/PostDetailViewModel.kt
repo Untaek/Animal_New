@@ -76,55 +76,5 @@ class PostDetailViewModel(val post: Post): BaseViewModel() {
             return modelClass.getConstructor(Post::class.java).newInstance(post)
         }
     }
-
-    fun download(view: View, content: Content) {
-        Glide.with(view)
-            .asFile()
-            .load(content.url)
-            .listener(object : RequestListener<File> {
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any?,
-                    target: Target<File>?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                }
-
-                override fun onResourceReady(
-                    resource: File?,
-                    model: Any?,
-                    target: Target<File>?,
-                    dataSource: DataSource?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    if(!PermissionHelper
-                            .checkAndRequestPermission(
-                                view.context,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                PermissionHelper.REQUEST_READ_EXTERNAL_STORAGE)
-                    ) { return false }
-
-                    val dir = File(Environment.getExternalStorageDirectory(), "Animal")
-                    val file = File(dir, content.file_name)
-
-                    if(dir.exists() || dir.mkdirs()) {
-                        Log.d("Download", "Directory created ${dir.absolutePath}")
-                    }
-
-                    try{
-                        resource!!.copyTo(file)
-                    }catch (e: FileAlreadyExistsException) {
-                        Log.d("Download", "File already exists")
-                    }
-
-                    Log.d("Download", "to ${file.absolutePath}")
-
-                    return false
-                }
-
-            })
-            .submit()
-    }
 }
 

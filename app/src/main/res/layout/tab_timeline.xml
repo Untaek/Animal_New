@@ -11,13 +11,25 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="0dp"
-                android:layout_height="0dp" app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:scrollbars="vertical"
-        />
+        <in.srain.cube.views.ptr.PtrClassicFrameLayout
+                app:ptr_resistance="2.6"
+                app:ptr_ratio_of_header_height_to_refresh="1.2"
+                app:ptr_duration_to_close_header="500"
+                app:ptr_duration_to_close="2000"
+                android:id="@+id/ptr_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scrollbars="vertical"
+                />
+        </in.srain.cube.views.ptr.PtrClassicFrameLayout>
+
+
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

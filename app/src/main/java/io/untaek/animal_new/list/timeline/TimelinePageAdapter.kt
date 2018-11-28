@@ -37,9 +37,15 @@ class TimelinePageAdapter(fragmentActivity: FragmentActivity): PagedListAdapter<
 
     init {
         vm.pagedTimeline.observe(fragmentActivity, Observer {
+            vm.refreshState.postValue(false)
             submitList(it)
         })
     }
+
+    fun refresh() {
+        vm.refresh()
+    }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemListTimelineBinding.inflate(LayoutInflater.from(parent.context), parent, false)

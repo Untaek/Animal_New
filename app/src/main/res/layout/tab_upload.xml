@@ -9,7 +9,7 @@
         <io.untaek.animal_new.component.PickContentButton
                 android:outlineProvider="bounds"
                 android:elevation="2dp"
-                app:type="camera"
+                app:pick_type="camera"
                 app:icon="@drawable/ic_photo_camera_black_24dp"
                 app:text="Camera"
                 android:layout_width="0dp"
@@ -23,7 +23,7 @@
                 android:id="@+id/sda"
                 android:outlineProvider="bounds"
                 android:elevation="2dp"
-                app:type="gallery"
+                app:pick_type="gallery"
                 app:icon="@drawable/ic_photo_library_black_24dp"
                 app:text="Gallery"
                 android:layout_width="0dp"
@@ -33,13 +33,13 @@
                 app:layout_constraintStart_toStartOf="@+id/guideline"
                 android:layout_marginStart="4dp" android:layout_marginEnd="8dp">
         </io.untaek.animal_new.component.PickContentButton>
-        <androidx.constraintlayout.widget.Guideline android:layout_width="0dp"
-                                                    android:layout_height="wrap_content" android:id="@+id/guideline"
-                                                    app:layout_constraintGuide_begin="205dp"
-                                                    android:orientation="vertical"
-                                                    app:layout_constraintStart_toStartOf="parent"
-                                                    app:layout_constraintEnd_toEndOf="parent"
-        />
+        <androidx.constraintlayout.widget.Guideline
+                app:layout_constraintGuide_percent="0.5"
+                android:layout_height="wrap_content" android:id="@+id/guideline"
+                android:orientation="vertical"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_width="0dp"/>
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/upload_status_container"
                 android:layout_width="match_parent"

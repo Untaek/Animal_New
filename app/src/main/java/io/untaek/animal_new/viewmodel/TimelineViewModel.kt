@@ -1,6 +1,7 @@
 package io.untaek.animal_new.viewmodel
 
 import androidx.databinding.ObservableArrayList
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import com.google.firebase.firestore.DocumentSnapshot
 import io.untaek.animal_new.list.timeline.TimelinePageDataSource
@@ -25,8 +26,17 @@ class TimelineViewModel: BaseViewModel() {
     /**
      * Paging
      */
-    val pagedTimeline = LivePagedListBuilder<DocumentSnapshot, Post>(
-        TimelinePageDataSource.TimelineSourceFactory()
-        , TimelinePageDataSource.config
-    ).build()
+
+    private val dataSourceFactory = TimelinePageDataSource.TimelineSourceFactory()
+
+    val pagedTimeline = LivePagedListBuilder(dataSourceFactory, TimelinePageDataSource.config)
+        .build()
+
+    val refreshState = MutableLiveData<Boolean>().apply { value = false }
+
+    fun refresh() {
+        refreshState.postValue(true)
+        pagedTimeline.value?.dataSource?.invalidate()
+    }
+
 }

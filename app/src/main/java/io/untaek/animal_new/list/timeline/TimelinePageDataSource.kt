@@ -1,10 +1,12 @@
 package io.untaek.animal_new.list.timeline
 
+import android.util.Log
 import androidx.paging.*
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import io.untaek.animal_new.type.Post
+import io.untaek.animal_new.viewmodel.TimelineViewModel
 
 class TimelinePageDataSource {
     companion object {
@@ -28,6 +30,7 @@ class TimelinePageDataSource {
             params: LoadInitialParams<DocumentSnapshot>,
             callback: LoadInitialCallback<DocumentSnapshot, Post>
         ) {
+            Log.d("TimelineSource", "loadInitial")
             FirebaseFirestore.getInstance()
                 .collection("posts")
                 .orderBy("time_stamp", Query.Direction.DESCENDING)

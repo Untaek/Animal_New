@@ -6,12 +6,15 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Point
 import android.net.Uri
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.Bindable
 import androidx.databinding.BindingAdapter
@@ -70,7 +73,7 @@ fun load(imageView: ImageView, content: Content) {
     //val options = contentImageOptions(screen.x, screen.x / content.width  * content.height)
     val options = contentImageOptions(screen.x, content.height)
 
-    //imageView.layoutParams = ConstraintLayout.LayoutParams(screen.x, content.height)
+    imageView.layoutParams = FrameLayout.LayoutParams(screen.x, content.height).apply { gravity = Gravity.CENTER }
 
     Glide.with(imageView).also { if (type == "gif") it.asGif() }
         .load(content.url)
@@ -113,3 +116,52 @@ fun timeCalculateFunction(textView: TextView, time: Date) {
     textView.text = result
 }
 
+fun download(view: View, content: Content) {
+    Glide.with(view)
+        .asFile()
+        .load(content.url)
+        .listener(object : RequestListener<File> {
+            override fun onLoadFailed(
+                e: GlideException?,
+                model: Any?,
+                target: Target<File>?,
+                isFirstResource: Boolean
+            ): Boolean {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun onResourceReady(
+                resource: File?,
+                model: Any?,
+                target: Target<File>?,
+                dataSource: DataSource?,
+                isFirstResource: Boolean
+            ): Boolean {
+                if(!PermissionHelper
+                        .checkAndRequestPermission(
+                            view.context,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            PermissionHelper.REQUEST_READ_EXTERNAL_STORAGE)
+                ) { return false }
+
+                val dir = File(Environment.getExternalStorageDirectory(), "Animal")
+                val file = File(dir, content.file_name)
+
+                if(dir.exists() || dir.mkdirs()) {
+                    Log.d("Download", "Directory created ${dir.absolutePath}")
+                }
+
+                try{
+                    resource!!.copyTo(file)
+                    Log.d("Download", "to ${file.absolutePath}")
+                    Toast.makeText(view.context, "Saved", Toast.LENGTH_SHORT).show()
+                }catch (e: FileAlreadyExistsException) {
+                    Log.d("Download", "File already exists")
+                }
+
+                return false
+            }
+
+        })
+        .submit()
+}
