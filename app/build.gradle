@@ -4,6 +4,10 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
+apply plugin: 'com.google.gms.google-services'
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -33,6 +37,13 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
 
+    // Lifecycle
+    implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"
+
+    // Paging
+    def paging_version = "2.1.0-beta01"
+    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
+
     // Dependencies for testing
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.0'
@@ -48,5 +59,8 @@ dependencies {
     implementation "com.google.firebase:firebase-storage:16.0.5"
     implementation "com.google.firebase:firebase-auth:16.0.5"
     implementation "com.google.firebase:firebase-messaging:17.3.4"
-    implementation "com.google.firebase:firebase-ads:17.1.1"
+    //implementation "com.google.firebase:firebase-ads:17.1.1"
+
+    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation "com.github.bumptech.glide:glide:4.8.0"
 }

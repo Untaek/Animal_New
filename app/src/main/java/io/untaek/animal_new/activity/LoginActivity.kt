@@ -1,4 +1,4 @@
-package io.untaek.animal_new.activities
+package io.untaek.animal_new.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
