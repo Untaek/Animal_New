@@ -4,12 +4,12 @@ import androidx.databinding.ObservableArrayList
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
 import io.untaek.animal_new.list.timeline.TimelinePageDataSource
 import io.untaek.animal_new.type.Dummy
 import io.untaek.animal_new.type.Post
 
 class TimelineViewModel: BaseViewModel() {
-
     val list = ObservableArrayList<Post>().apply {
         add(Dummy.post1)
         add(Dummy.post2)
@@ -38,5 +38,4 @@ class TimelineViewModel: BaseViewModel() {
         refreshState.postValue(true)
         pagedTimeline.value?.dataSource?.invalidate()
     }
-
 }

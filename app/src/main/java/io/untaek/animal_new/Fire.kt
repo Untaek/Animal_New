@@ -41,28 +41,6 @@ object Fire {
         fun onFail()
     }
 
-//    fun loadPosts(limit: Int, lastSeen: DocumentSnapshot?, success: (ArrayList<Post>, DocumentSnapshot?) -> Any, fail: (Exception) -> Any) {
-//        val task = FirebaseFirestore.getInstance()
-//            .collection(POSTS)
-//            .orderBy("timeStamp", Query.Direction.DESCENDING)
-//
-//        if(lastSeen != null)
-//            task.startAfter(lastSeen)
-//
-//        task
-//            .limit(limit.toLong())
-//            .get()
-//            .addOnSuccessListener { qs ->
-//                val posts = qs.map {
-//                    it.toObject(Post::class.java).apply { id = it.id }
-//                } as ArrayList
-//                success(posts, qs.documents.lastOrNull())
-//            }
-//            .addOnFailureListener {
-//                fail(it)
-//            }
-//    }
-
     /**
      * working on
      */
@@ -95,7 +73,7 @@ object Fire {
             .addOnSuccessListener {
                 val downloadUri = it
 
-                val content = Content(mime, fileName, downloadUri.toString(), size.second, size.first)
+                val content = Content(mime, fileName, downloadUri.toString(), size.x, size.y)
 
                 userRef
                     .set(Post(content = content))

@@ -14,7 +14,7 @@ class UploadViewModel: BaseViewModel() {
     val uploadingState = MutableLiveData<ArrayList<Uploading>>()
     var currentUri: Uri? = null
     var currentMime: String? = null
-    var currentSize: Pair<Int, Int>? = null
+    var currentSize: Point? = null
 
     init {
         uploadingState.value = arrayListOf()

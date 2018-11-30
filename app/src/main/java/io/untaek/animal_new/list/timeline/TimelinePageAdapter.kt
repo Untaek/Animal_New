@@ -49,7 +49,7 @@ class TimelinePageAdapter(fragmentActivity: FragmentActivity): PagedListAdapter<
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemListTimelineBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        binding.handler = Handler()
+        binding.handler = Handler(vm)
         return ViewHolder(binding)
     }
 
@@ -73,8 +73,7 @@ class TimelinePageAdapter(fragmentActivity: FragmentActivity): PagedListAdapter<
         }
     }
 
-    class Handler {
-
+    class Handler(val vm: TimelineViewModel) {
         fun onClickUserImageAndName(view: View, post: Post) {
             Toast.makeText(view.context, "onClickUserImageAndName", Toast.LENGTH_SHORT).show()
             val start = System.currentTimeMillis()
@@ -94,6 +93,7 @@ class TimelinePageAdapter(fragmentActivity: FragmentActivity): PagedListAdapter<
             view.context.startActivity(intent)
         }
         fun onClickLike(view: View, post: Post) {
+
             Toast.makeText(view.context, "onClickLike", Toast.LENGTH_SHORT).show()
         }
         fun onClickContent(view: View, post: Post) {

@@ -18,9 +18,9 @@
             <com.jsibbold.zoomage.ZoomageView
                     android:layout_gravity="center_vertical"
                     android:id="@+id/imageView"
-                    content="@{vm.post.content}"
+                    full_content="@{vm.post.content}"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="match_parent"/>
         </FrameLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -39,8 +39,8 @@
                     android:layout_marginEnd="8dp"
             />
             <io.untaek.animal_new.component.TextWithIcon
-                    app:icon="@drawable/ic_bone"
-                    app:count="0"
+                    app:icon="@{vm.post.like ? @drawable/ic_fill_bone : @drawable/ic_bone}"
+                    app:count="@{vm.post.total_likes}"
                     app:color="@color/colorPrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
@@ -52,7 +52,7 @@
 
             <io.untaek.animal_new.component.TextWithIcon
                     app:icon="@drawable/ic_chat_black_24dp"
-                    app:count="0"
+                    app:count="@{vm.post.total_comments}"
                     app:color="@color/colorPrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"

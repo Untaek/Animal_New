@@ -52,6 +52,11 @@ fun contentImageOptions(x: Int, y: Int) = RequestOptions()
     .override(x, y)
     .centerCrop()
 
+fun fullContentImageOptions(x: Int, y: Int) = RequestOptions()
+    .diskCacheStrategy(DiskCacheStrategy.ALL)
+    .override(x, y)
+    .fitCenter()
+
 @BindingAdapter("user_image")
 fun loadUserImage(imageView: ImageView, url: String) {
     val options= userImageOptions
@@ -64,20 +69,49 @@ fun loadUserImage(imageView: ImageView, url: String) {
 }
 
 @BindingAdapter("content")
-fun load(imageView: ImageView, content: Content) {
+fun load1(imageView: ImageView, content: Content) {
     /**
      * content.mime could be like a image/jpeg or image/png or image/gif etc.
      */
     val type = content.mime.split("/")[1]
-    val screen = Point().also { (imageView.context as Activity).windowManager.defaultDisplay.getSize(it) }
-    //val options = contentImageOptions(screen.x, screen.x / content.width  * content.height)
-    val options = contentImageOptions(screen.x, content.height)
+    val screen = ContentUtil.screenSize(imageView.context)
 
-    imageView.layoutParams = FrameLayout.LayoutParams(screen.x, content.height).apply { gravity = Gravity.CENTER }
+    val width: Int = screen.x
+    var height: Int = content.height * screen.x / content.width
+
+    height = when(height > screen.y * 0.65) {
+        true -> (height * 0.65).toInt()
+        false -> height
+    }
+
+    if(content.width < content.height) {
+        height = when(height > screen.y * 0.65) {
+            true -> (height * 0.75).toInt()
+            false -> height
+        }
+    }
+
+    val options = contentImageOptions(width, height)
+
+    imageView.layoutParams = FrameLayout.LayoutParams(width, height).apply { gravity = Gravity.CENTER }
 
     Glide.with(imageView).also { if (type == "gif") it.asGif() }
         .load(content.url)
         .transition(DrawableTransitionOptions.withCrossFade(500))
+        .apply(options)
+        .thumbnail(0.1f)
+        .into(imageView)
+}
+
+@BindingAdapter("full_content")
+fun load2(imageView: ImageView, content: Content) {
+    val type = content.mime.split("/")[1]
+
+    val options = fullContentImageOptions(content.width, content.height)
+
+    Glide.with(imageView).also { if (type == "gif") it.asGif() }
+        .load(content.url)
+        .transition(DrawableTransitionOptions.withCrossFade(400))
         .apply(options)
         .thumbnail(0.1f)
         .into(imageView)
@@ -165,3 +199,5 @@ fun download(view: View, content: Content) {
         })
         .submit()
 }
+
+
