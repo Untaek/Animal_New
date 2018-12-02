@@ -6,13 +6,14 @@ import com.google.firebase.firestore.DocumentSnapshot
 import io.untaek.animal_new.Reactive
 import io.untaek.animal_new.type.Post
 
+@Deprecated("Updating Specific item is not working")
 class TimelinePageDataSource {
     companion object {
         val config = PagedList.Config.Builder()
             .setEnablePlaceholders(true)
-            .setInitialLoadSizeHint(5)
-            .setPageSize(5)
-            .setPrefetchDistance(5)
+            .setInitialLoadSizeHint(4)
+            .setPageSize(4)
+            .setPrefetchDistance(4)
             .build()
     }
 
@@ -29,7 +30,6 @@ class TimelinePageDataSource {
             callback: LoadInitialCallback<DocumentSnapshot, Post>
         ) {
             Log.d("TimelineSource", "loadInitial")
-
             Reactive.loadFirstTimeline(params.requestedLoadSize).also {
                 it.subscribe { pair ->
                     Log.d("TimelineSource", pair.second.toString())
@@ -51,6 +51,8 @@ class TimelinePageDataSource {
             }
         }
 
-        override fun loadBefore(params: LoadParams<DocumentSnapshot>, callback: LoadCallback<DocumentSnapshot, Post>) {}
+        override fun loadBefore(params: LoadParams<DocumentSnapshot>, callback: LoadCallback<DocumentSnapshot, Post>) {
+
+        }
     }
 }

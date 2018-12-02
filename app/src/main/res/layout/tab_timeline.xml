@@ -4,6 +4,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
 >
     <data>
+        <import type="androidx.databinding.ObservableArrayList"/>
         <variable name="vm" type="io.untaek.animal_new.viewmodel.TimelineViewModel"/>
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -25,6 +26,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scrollbars="vertical"
+                        binding="@{vm.timeline}"
                 />
         </in.srain.cube.views.ptr.PtrClassicFrameLayout>
 

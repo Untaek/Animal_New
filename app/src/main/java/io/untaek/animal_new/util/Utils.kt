@@ -19,6 +19,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.Bindable
 import androidx.databinding.BindingAdapter
 import androidx.databinding.BindingMethod
+import androidx.databinding.ObservableArrayList
+import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -28,7 +31,9 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import io.untaek.animal_new.component.PickContentButton
+import io.untaek.animal_new.list.timeline.TimelineAdapter
 import io.untaek.animal_new.type.Content
+import io.untaek.animal_new.type.Post
 import io.untaek.animal_new.viewmodel.UploadViewModel
 import java.io.File
 import java.util.*
@@ -36,11 +41,12 @@ import java.util.*
 /**
  * Does not work.
  */
-//@BindingAdapter("binding")
-//fun bind(recyclerView: RecyclerView, items: LiveData<List<Post>>){
-//    val adapter: TimelineAdapter = recyclerView.adapter as? TimelineAdapter ?: TimelineAdapter()
-//
-//}
+@BindingAdapter("binding")
+fun bind(recyclerView: RecyclerView, items: ObservableArrayList<Post>){
+    val adapter: TimelineAdapter = recyclerView.adapter as? TimelineAdapter ?: TimelineAdapter(recyclerView.context as FragmentActivity)
+    items
+    adapter.notifyDataSetChanged()
+}
 
 val userImageOptions = RequestOptions()
     .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -119,35 +125,24 @@ fun load2(imageView: ImageView, content: Content) {
 
 @BindingAdapter("time")
 fun timeCalculateFunction(textView: TextView, time: Date) {
-    val result: String
-    val gc = GregorianCalendar(TimeZone.getTimeZone("Asia/Seoul"))
-    val gc_year = gc.get(GregorianCalendar.YEAR)
-    val gc_month = gc.get(GregorianCalendar.MONTH)
-    val gc_date = gc.get(GregorianCalendar.DATE)
-    val gc_hour = gc.get(GregorianCalendar.HOUR)
-    val gc_minute = gc.get(GregorianCalendar.MINUTE)
+    val currentTime = Calendar.getInstance().apply { this.time = Date() }
+    val postTime = Calendar.getInstance().apply { this.time = time }
+    val diff = (currentTime.timeInMillis - postTime.timeInMillis) / 1000
 
-    val time_year = time.year
-    val time_month = time.month
-    val time_date = time.date
-    val time_hour = time.hours
-    val time_minute = time.minutes
+    val minutes = (diff / 60) % 60
+    val hours = (diff / 60 / 60) % 24
+    val days = (diff / 24 / 60 / 60) % 30
+    val months = (diff / 30 / 24 / 60 / 60) % 12
+    val years = (diff / 12 / 30 / 24 / 60 / 60)
 
-    if (time_year - gc_year > 0) {
-        result = "" + (time_year - gc_year).toString() + "년 전"
-    } else if (time_month - gc_month > 0) {
-        result = "" + (time_month - gc_month) + "달 전"
-    } else if (time_date - gc_date > 0) {
-        result = "" + (time_date - gc_date) + "일 전"
-    } else if (time_hour - gc_hour > 0) {
-        result = "" + (time_hour - gc_hour) + "시간 전"
-    } else if (time_minute - gc_minute > 0) {
-        result = "" + (time_minute - gc_minute) + "분 전"
-    }else{
-        result = "몇초 전 "
+    textView.text = when {
+        (years > 0) -> "$years 년 전"
+        (months > 0) -> "$months 달 전"
+        (days > 0) -> "$days 일 전"
+        (hours > 0) -> "$hours 시간 전"
+        (minutes > 0) -> "$minutes 분 전"
+        else -> "방금 전"
     }
-
-    textView.text = result
 }
 
 fun download(view: View, content: Content) {

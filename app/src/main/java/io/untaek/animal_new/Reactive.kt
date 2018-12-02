@@ -8,16 +8,17 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
-import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
 import io.reactivex.observables.ConnectableObservable
+import io.reactivex.schedulers.Schedulers
 import io.untaek.animal_new.type.Post
-import org.w3c.dom.Document
 import java.lang.Exception
 import java.util.*
 
 object Reactive {
     data class LastSeen(val documentSnapshot: DocumentSnapshot?)
+    data class LikeState(val post: Post, val loading: Boolean)
 
     private fun loadFirstTimelineObservable(limit: Int) =
         Observable.create(ObservableOnSubscribe<Pair<LastSeen, List<Post>>> { sub ->
@@ -62,7 +63,6 @@ object Reactive {
                 .document(post.id)
                 .get()
                 .addOnSuccessListener {
-                    Log.d("Reactive", "call getLike ${it.exists()}")
                     post.like = it.exists()
                     sub.onNext(post)
                     sub.onComplete()
@@ -70,11 +70,76 @@ object Reactive {
         }
     }
 
+    private fun likeObservable(post: Post): Observable<LikeState> {
+        return Observable.create { sub ->
+            /**
+             * Fake state
+             */
+            val localLike = !post.like
+
+            val likeOrDislike = if (localLike) 1 else -1
+
+            val localTotalLikes = post.total_likes.plus(likeOrDislike)
+            val localState = LikeState(post.copy(like = localLike, total_likes = localTotalLikes), true)
+
+            sub.onNext(localState)
+
+            val fs = FirebaseFirestore.getInstance()
+            val postRef = fs
+                .collection(Fire.POSTS)
+                .document(post.id)
+
+            val ownerRef = fs.collection(Fire.USERS).document(post.user.id)
+
+            val userLikesRef = fs.collection(Fire.USERS)
+                .document("dbsdlswp")
+                .collection(Fire.LIKES)
+                .document(post.id)
+
+            //FirebaseAuth.getInstance().currentUser?.let { _ ->
+                fs.runTransaction { t ->
+                    val newPostTotalLikesValue = t.get(postRef).getLong(Fire.TOTAL_LIKES)?.plus(likeOrDislike)
+                    val newUserTotalLikesValue = t.get(ownerRef).getLong(Fire.TOTAL_LIKES)?.plus(likeOrDislike)
+
+                    if(localLike) {
+                        t.set(userLikesRef, HashMap())
+                    }
+                    else {
+                        t.delete(userLikesRef)
+                    }
+                    t.update(postRef, Fire.TOTAL_LIKES, newPostTotalLikesValue)
+                    t.update(ownerRef, Fire.TOTAL_LIKES, newUserTotalLikesValue)
+
+
+                    newPostTotalLikesValue
+                }.addOnCompleteListener {
+                    if(it.isSuccessful){
+                        /**
+                         * Real State
+                         */
+                        val newState = LikeState(post.copy(like = localLike, total_likes = it.result!!.toInt()), false)
+                        sub.onNext(newState)
+                        sub.onComplete()
+                    }
+                    else {
+                        sub.onError(Exception())
+                        Log.d("Fire", "like exception", it.exception)
+                    }
+                }
+           // }
+        }
+    }
+
+    /**
+     * Exposed functions
+     */
+
     @SuppressLint("CheckResult")
     fun loadFirstTimeline(limit: Int): Observable<Pair<DocumentSnapshot?, List<Post>>> {
         Log.d("Reactive", "call loadFirstTimeline")
         val observer = loadFirstTimelineObservable(limit).publish()
-        val ob1 = observer.map { it.first }
+        val ob1 = observer
+            .map { it.first }
         val ob2 = observer.flatMapIterable { it.second }
             .flatMap(this::getLike)
             .toList()
@@ -85,6 +150,7 @@ object Reactive {
             .zip(ob1, ob2, BiFunction<LastSeen, List<Post>, Pair<DocumentSnapshot?, List<Post>>>{ t1, t2 ->
                 Pair(t1.documentSnapshot, t2)
             })
+            .subscribeOn(AndroidSchedulers.mainThread())
 
         observer.connect()
         return result
@@ -110,42 +176,9 @@ object Reactive {
         return result
     }
 
-    fun like(post: Post): Observable<Post> {
-        return Observable.create { sub ->
-            val fs = FirebaseFirestore.getInstance()
-            val postRef = fs
-                .collection(Fire.POSTS)
-                .document(post.id)
-
-            val ownerRef = fs.collection(Fire.USERS).document(post.user.id)
-
-            val userLikesRef = fs.collection(Fire.USERS)
-                .document(FirebaseAuth.getInstance().uid!!)
-                .collection(Fire.LIKES)
-                .document(post.id)
-
-            FirebaseAuth.getInstance().currentUser?.let { _ ->
-                fs.runTransaction { t ->
-                    val newPostTotalLikesValue = t.get(postRef).getLong(Fire.TOTAL_LIKES)?.plus(1L)
-                    val newUserTotalLikesValue = t.get(ownerRef).getLong(Fire.TOTAL_LIKES)?.plus(1L)
-
-                    t.update(postRef, Fire.TOTAL_LIKES, newPostTotalLikesValue)
-                    t.update(ownerRef, Fire.TOTAL_LIKES, newUserTotalLikesValue)
-                    t.set(userLikesRef, HashMap())
-
-                    newPostTotalLikesValue
-                }.addOnCompleteListener {
-                    if(it.isSuccessful){
-                        sub.onNext(post)
-                        sub.onComplete()
-                    }
-                    else {
-                        sub.onError(Exception())
-                        Log.d("Fire", "like exception", it.exception)
-                    }
-                }
-            }
-        }
+    @SuppressLint("CheckResult")
+    fun like(post: Post): Observable<LikeState> {
+        return likeObservable(post)
     }
 
 }
