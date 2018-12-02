@@ -31,20 +31,24 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import io.untaek.animal_new.component.PickContentButton
+import io.untaek.animal_new.list.comment.CommentsAdapter
 import io.untaek.animal_new.list.timeline.TimelineAdapter
+import io.untaek.animal_new.type.Comment
 import io.untaek.animal_new.type.Content
 import io.untaek.animal_new.type.Post
 import io.untaek.animal_new.viewmodel.UploadViewModel
 import java.io.File
 import java.util.*
 
-/**
- * Does not work.
- */
 @BindingAdapter("binding")
 fun bind(recyclerView: RecyclerView, items: ObservableArrayList<Post>){
     val adapter: TimelineAdapter = recyclerView.adapter as? TimelineAdapter ?: TimelineAdapter(recyclerView.context as FragmentActivity)
-    items
+    adapter.notifyDataSetChanged()
+}
+
+@BindingAdapter("bind_comment")
+fun bind2(recyclerView: RecyclerView, items: ObservableArrayList<Comment>){
+    val adapter: CommentsAdapter = recyclerView.adapter as? CommentsAdapter ?: CommentsAdapter(recyclerView.context as FragmentActivity)
     adapter.notifyDataSetChanged()
 }
 

@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.databinding.Bindable
 import java.io.Serializable
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 data class Post(
@@ -14,8 +15,9 @@ data class Post(
     val content: Content = Content(),
     val total_likes: Int = 0,
     val total_comments: Int = 0,
+    var like: Boolean = false,
 
-    var like: Boolean = false
+    var comments: ArrayList<Comment> = arrayListOf()
 ): Serializable
 
 data class Content(
@@ -40,10 +42,12 @@ data class UserDetail(
 ): Serializable
 
 data class Comment(
+    var id: String = "",
     val user: User = User(),
     val text: String = "",
-    val time_stamp: Date = Date()
-)
+    val time_stamp: Date = Date(),
+    val total_likes: Long = 0
+): Serializable
 
 data class Uploading(
     var progress: Int = 0,

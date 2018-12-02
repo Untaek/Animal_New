@@ -1,75 +1,69 @@
 package io.untaek.animal_new.viewmodel
 
-import android.Manifest
-import android.os.Environment
+import android.annotation.SuppressLint
 import android.util.Log
-import android.view.View
-import androidx.lifecycle.MutableLiveData
+import androidx.databinding.ObservableArrayList
+import androidx.databinding.ObservableBoolean
+import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PageKeyedDataSource
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
-import io.untaek.animal_new.list.comment.CommentsPageDataSource
-import io.untaek.animal_new.list.timeline.TimelinePageDataSource
+import com.google.firebase.firestore.DocumentSnapshot
+import io.untaek.animal_new.Reactive
 import io.untaek.animal_new.type.Comment
-import io.untaek.animal_new.type.Content
 import io.untaek.animal_new.type.Post
-import io.untaek.animal_new.type.User
-import io.untaek.animal_new.util.PermissionHelper
-import java.io.File
-import java.util.*
 
 class PostDetailViewModel(val post: Post): BaseViewModel() {
-    val comments = MutableLiveData<ArrayList<Comment>>()
+    val commentText = ObservableField<String>()
+    val comments = ObservableArrayList<Comment>()
+    val loading = ObservableBoolean(false)
+    var lastSeen: DocumentSnapshot? = null
 
-    fun loadDummyComments() {
-        comments.postValue(arrayListOf(
-            Comment(User(), "comment comment comment this is comment", Date()),
-            Comment(User(), "comment comment comment this is comment", Date()),
-            Comment(User(), "comment comment comment this is comment", Date()),
-            Comment(User(), "comment comment comment this is comment", Date()),
-            Comment(User(), "comment comment comment this is comment", Date()),
-            Comment(User(), "comment comment comment this is comment", Date()),
-            Comment(User(), "comment comment comment this is comment", Date()),
-            Comment(User(), "comment comment comment this is comment", Date()),
-            Comment(User(), "comment comment comment this is comment", Date()),
-            Comment(User(), "comment comment comment this is comment", Date()),
-            Comment(User(), "comment comment comment this is comment", Date()),
-            Comment(User(), "comment comment comment this is comment", Date()),
-            Comment(User(), "comment comment comment this is comment", Date())
-        ))
-    }
-
-    fun loadComments() {
-        FirebaseFirestore.getInstance()
-            .collection("posts")
-            .document(post.id)
-            .collection("comments")
-            .orderBy("time_stamp", Query.Direction.ASCENDING)
-            .limit(10)
-            .get()
-            .addOnSuccessListener {
-                comments.postValue(it.toObjects(Comment::class.java) as ArrayList<Comment>)
-            }
-            .addOnFailureListener {
-                this.logException(it)
+    init {
+        loading.set(true)
+        val _sub = Reactive.loadFirstComments(post, 15)
+            .subscribe {
+                lastSeen = it.first
+                comments.addAll(it.second)
+                loading.set(false)
             }
     }
 
-    /**
-     * Paging
-     */
-    val comments2 = LivePagedListBuilder(
-        CommentsPageDataSource.CommentsSourceFactory(),
-        CommentsPageDataSource.config
-    ).build()
+    @SuppressLint("CheckResult")
+    fun sendNewComment() {
+        val text = commentText.get() ?: ""
+        if(text == "") {
+            return
+        }
+        loading.set(true)
+        Reactive.sendNewComment(post, text)
+            .subscribe {
+                Log.d(TAG, it.toString())
+                comments.add(0, it)
+                commentText.set("")
+                loading.set(false)
+            }
+    }
+
+    @SuppressLint("CheckResult")
+    fun loadMoreComments(limit: Int) {
+        loading.set(true)
+        if (lastSeen != null){
+            Reactive.loadCommentsPage(post, limit, lastSeen!!)
+                .subscribe {
+                    lastSeen = it.first
+                    comments.addAll(it.second)
+                    loading.set(false)
+                }
+        }
+    }
+
+//    /**
+//     * Paging
+//     */
+//    val comments2 = LivePagedListBuilder(
+//        CommentsPageDataSource.CommentsSourceFactory(),
+//        CommentsPageDataSource.config
+//    ).build()
 
     class PostDetailViewModelFactory(val post: Post): ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {

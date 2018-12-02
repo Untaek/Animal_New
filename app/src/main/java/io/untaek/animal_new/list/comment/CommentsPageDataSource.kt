@@ -9,6 +9,7 @@ import com.google.firebase.firestore.Query
 import io.untaek.animal_new.type.Comment
 import io.untaek.animal_new.type.Post
 
+@Deprecated("Updating Specific item is not working")
 class CommentsPageDataSource {
     companion object {
         val config = PagedList.Config.Builder()

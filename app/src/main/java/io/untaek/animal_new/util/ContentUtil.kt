@@ -43,7 +43,7 @@ object ContentUtil {
         return Point()
     }
 
-    fun getOrientation(context: Context, uri: Uri): Int {
+    private fun getOrientation(context: Context, uri: Uri): Int {
         val exif = androidx.exifinterface.media.ExifInterface(context.contentResolver.openInputStream(uri)!!)
         Log.d("ContentUtil", exif.getAttributeInt(androidx.exifinterface.media.ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED).toString())
         return exif.getAttributeInt(

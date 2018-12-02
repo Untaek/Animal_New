@@ -17,8 +17,7 @@ class CommentViewFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentCommentViewBinding.inflate(inflater, container, false)
         binding.vm = ViewModelProviders.of(this.requireActivity()).get(PostDetailViewModel::class.java)
-        //binding.recyclerView.adapter = CommentsAdapter(this.requireActivity())
-        binding.recyclerView.adapter = CommentsPageAdapter(this.requireActivity())
+        binding.recyclerView.adapter = CommentsAdapter(this.requireActivity())
         binding.recyclerView.layoutManager = LinearLayoutManager(this.requireContext(), LinearLayoutManager::VERTICAL.get(), false)
         binding.recyclerView.addItemDecoration(CommentsDecoration())
         return binding.root

@@ -14,15 +14,10 @@ import io.untaek.animal_new.type.Post
 import io.untaek.animal_new.viewmodel.PostDetailViewModel
 import io.untaek.animal_new.viewmodel.TimelineViewModel
 
+@Deprecated("Updating Specific item is not working")
 class CommentsPageAdapter(fragmentActivity: FragmentActivity): PagedListAdapter<Comment, CommentsPageAdapter.ViewHolder>(DIFF_CALLBACK) {
 
     val vm = ViewModelProviders.of(fragmentActivity).get(PostDetailViewModel::class.java)
-
-    init {
-        vm.comments2.observe(fragmentActivity, Observer {
-            submitList(it)
-        })
-    }
 
     companion object {
         private val DIFF_CALLBACK = object: DiffUtil.ItemCallback<Comment>(){

@@ -12,9 +12,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
 import io.reactivex.observables.ConnectableObservable
 import io.reactivex.schedulers.Schedulers
+import io.untaek.animal_new.type.Comment
 import io.untaek.animal_new.type.Post
+import io.untaek.animal_new.type.User
 import java.lang.Exception
 import java.util.*
+import kotlin.collections.ArrayList
 
 object Reactive {
     data class LastSeen(val documentSnapshot: DocumentSnapshot?)
@@ -54,7 +57,7 @@ object Reactive {
                 }
     })
 
-    private fun getLike(post: Post): Observable<Post> {
+    private fun getLikeObservable(post: Post): Observable<Post> {
         return Observable.create { sub ->
             FirebaseFirestore.getInstance()
                 .collection("users")
@@ -63,9 +66,78 @@ object Reactive {
                 .document(post.id)
                 .get()
                 .addOnSuccessListener {
-                    post.like = it.exists()
-                    sub.onNext(post)
+                    sub.onNext(post.copy(like = it.exists()))
                     sub.onComplete()
+                }
+        }
+    }
+
+    private fun getPopularCommentsObservable(post: Post): Observable<Post> {
+        return Observable.create { sub ->
+            FirebaseFirestore.getInstance()
+                .collection("posts")
+                .document(post.id)
+                .collection("comments")
+                .orderBy("time_stamp", Query.Direction.DESCENDING)
+                .limit(2)
+                .get()
+                .addOnSuccessListener {
+                    val comments = it.map {
+                            comment -> comment.toObject(Comment::class.java).apply { id = comment.id }
+                    } as ArrayList<Comment>
+
+                    sub.onNext(post.copy(comments = comments))
+                    sub.onComplete()
+                }
+                .addOnFailureListener {
+                    sub.onError(it)
+                }
+        }
+    }
+
+    private fun loadFirstCommentsObservable(post: Post, limit: Int): Observable<Pair<LastSeen, ArrayList<Comment>>> {
+        return Observable.create { sub ->
+            FirebaseFirestore.getInstance()
+                .collection("posts")
+                .document(post.id)
+                .collection("comments")
+                .orderBy("time_stamp", Query.Direction.DESCENDING)
+                .limit(limit.toLong())
+                .get()
+                .addOnSuccessListener {
+                    val comments = it.map {
+                            comment -> comment.toObject(Comment::class.java).apply { id = comment.id }
+                    } as ArrayList<Comment>
+
+                    sub.onNext(Pair(LastSeen(it.lastOrNull()), comments))
+                    sub.onComplete()
+                }
+                .addOnFailureListener {
+                    sub.onError(it)
+                }
+        }
+    }
+
+    private fun loadCommentsPageObservable(post: Post, limit: Int, lastSeen: DocumentSnapshot): Observable<Pair<LastSeen, ArrayList<Comment>>> {
+        return Observable.create { sub ->
+            FirebaseFirestore.getInstance()
+                .collection("posts")
+                .document(post.id)
+                .collection("comments")
+                .orderBy("time_stamp", Query.Direction.DESCENDING)
+                .startAfter(lastSeen)
+                .limit(limit.toLong())
+                .get()
+                .addOnSuccessListener {
+                    val comments = it.map {
+                            comment -> comment.toObject(Comment::class.java).apply { id = comment.id }
+                    } as ArrayList<Comment>
+
+                    sub.onNext(Pair(LastSeen(it.lastOrNull()), comments))
+                    sub.onComplete()
+                }
+                .addOnFailureListener {
+                    sub.onError(it)
                 }
         }
     }
@@ -130,9 +202,40 @@ object Reactive {
         }
     }
 
-    /**
+    private fun newCommentObservable(post: Post, text: String): Observable<Comment> {
+        return Observable.create { sub ->
+            val postRef = FirebaseFirestore
+                .getInstance()
+                .collection("posts")
+                .document(post.id)
+
+            val commentRef = postRef
+                .collection("comments")
+                .document()
+
+            val comment = Comment(commentRef.id, User(), text)
+
+            FirebaseFirestore
+                .getInstance()
+                .runTransaction { t ->
+                    val newCommentsAmount = t.get(postRef).getLong("total_comments")!!.plus(1)
+
+                    t.update(postRef, "total_comments", newCommentsAmount)
+                    t.set(commentRef, comment)
+                }
+                .addOnSuccessListener {
+                    sub.onNext(comment)
+                    sub.onComplete()
+                }
+                .addOnFailureListener {
+                    sub.onError(it)
+                }
+        }
+    }
+
+    /************************
      * Exposed functions
-     */
+     ************************/
 
     @SuppressLint("CheckResult")
     fun loadFirstTimeline(limit: Int): Observable<Pair<DocumentSnapshot?, List<Post>>> {
@@ -141,7 +244,8 @@ object Reactive {
         val ob1 = observer
             .map { it.first }
         val ob2 = observer.flatMapIterable { it.second }
-            .flatMap(this::getLike)
+            .flatMap(this::getLikeObservable)
+            .flatMap(this::getPopularCommentsObservable)
             .toList()
             .map { it.sortedByDescending { p -> p.time_stamp }}
             .toObservable()
@@ -162,7 +266,7 @@ object Reactive {
         val observer = loadTimelinePageObservable(limit, lastSeen).publish()
         val ob1 = observer.map { it.first }
         val ob2 = observer.flatMapIterable { it.second }
-            .flatMap(this::getLike)
+            .flatMap(this::getLikeObservable)
             .toList()
             .map { it.sortedByDescending { p -> p.time_stamp }}
             .toObservable()
@@ -176,9 +280,25 @@ object Reactive {
         return result
     }
 
-    @SuppressLint("CheckResult")
+    fun loadFirstComments(post: Post, limit: Int): Observable<Pair<DocumentSnapshot?, ArrayList<Comment>>> {
+        return loadFirstCommentsObservable(post, limit)
+            .map {
+                Pair(it.first.documentSnapshot, it.second)
+            }
+    }
+
+    fun loadCommentsPage(post: Post, limit: Int, lastSeen: DocumentSnapshot): Observable<Pair<DocumentSnapshot?, ArrayList<Comment>>> {
+        return loadCommentsPageObservable(post, limit, lastSeen)
+            .map {
+                Pair(it.first.documentSnapshot, it.second)
+            }
+    }
+
+    fun sendNewComment(post: Post, text: String): Observable<Comment> {
+        return newCommentObservable(post, text)
+    }
+
     fun like(post: Post): Observable<LikeState> {
         return likeObservable(post)
     }
-
 }
