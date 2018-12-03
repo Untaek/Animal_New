@@ -32,6 +32,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import io.untaek.animal_new.component.PickContentButton
 import io.untaek.animal_new.list.comment.CommentsAdapter
+import io.untaek.animal_new.list.mypage.MyPageAdapter
 import io.untaek.animal_new.list.timeline.TimelineAdapter
 import io.untaek.animal_new.type.Comment
 import io.untaek.animal_new.type.Content
@@ -40,11 +41,35 @@ import io.untaek.animal_new.viewmodel.UploadViewModel
 import java.io.File
 import java.util.*
 
+@BindingAdapter("recyclerViewImage")
+fun load_recyclerViewImage(imageView: ImageView, content: Content) {
+    /**
+     * content.mime could be like a image/jpeg or image/png or image/gif etc.
+     */
+    val type = content.mime.split("/")[1]
+    val screen = Point().also { (imageView.context as Activity).windowManager.defaultDisplay.getSize(it) }
+    val options = contentImageOptions(screen.x/3-4, screen.x/3-4)
+
+    Glide.with(imageView).also { if (type == "gif") it.asGif() }
+        .load(content.url)
+        .transition(DrawableTransitionOptions.withCrossFade(500))
+        .apply(options)
+        .thumbnail(0.1f)
+        .into(imageView)
+}
+
 @BindingAdapter("binding")
 fun bind(recyclerView: RecyclerView, items: ObservableArrayList<Post>){
     val adapter: TimelineAdapter = recyclerView.adapter as? TimelineAdapter ?: TimelineAdapter(recyclerView.context as FragmentActivity)
     adapter.notifyDataSetChanged()
 }
+
+@BindingAdapter("binding_mypage")
+fun bind_myPage(recyclerView: RecyclerView, items: ObservableArrayList<Post>){
+    val adapter: MyPageAdapter = recyclerView.adapter as? MyPageAdapter ?: MyPageAdapter(recyclerView.context as FragmentActivity)
+    adapter.notifyDataSetChanged()
+}
+
 
 @BindingAdapter("bind_comment")
 fun bind2(recyclerView: RecyclerView, items: ObservableArrayList<Comment>){

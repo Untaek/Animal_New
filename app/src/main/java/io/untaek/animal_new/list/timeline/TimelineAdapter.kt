@@ -6,17 +6,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import io.untaek.animal_new.Reactive
 import io.untaek.animal_new.activity.postdetail.PostDetailActivity
 import io.untaek.animal_new.activity.UserDetailActivity
 import io.untaek.animal_new.databinding.ItemListTimelineBinding
+import io.untaek.animal_new.tab.fragment.MyPageFragment
+import io.untaek.animal_new.tab.fragment.TimelineFragment
 import io.untaek.animal_new.type.Post
 import io.untaek.animal_new.viewmodel.TimelineViewModel
 
 class TimelineAdapter(fragmentActivity: FragmentActivity): RecyclerView.Adapter<TimelineAdapter.ViewHolder>() {
-
     val vm = ViewModelProviders.of(fragmentActivity).get(TimelineViewModel::class.java)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

@@ -4,7 +4,6 @@ import `in`.srain.cube.views.ptr.PtrDefaultHandler
 import `in`.srain.cube.views.ptr.PtrFrameLayout
 import `in`.srain.cube.views.ptr.PtrHandler
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,13 +12,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import io.untaek.animal_new.Reactive
 import io.untaek.animal_new.databinding.TabTimelineBinding
 import io.untaek.animal_new.list.timeline.TimelineAdapter
 import io.untaek.animal_new.list.timeline.TimelineDecorator
-import io.untaek.animal_new.list.timeline.TimelinePageAdapter
 import io.untaek.animal_new.viewmodel.TimelineViewModel
 
 

@@ -35,11 +35,16 @@ data class User(
 ): Serializable
 
 data class UserDetail(
-    val user: User = User(),
+
+    val name : String = "inje",
+    val picture_url : String = "https://lh3.googleusercontent.com/-NY106fsyVQ0/AAAAAAAAAAI/AAAAAAAAA28/CvFPD-JjtrY/s96-c/photo.jpg",
     val total_posts: Int = 10,
     val total_likes: Int = 8,
     val total_followers: Int = 2,
-    val follows: HashMap<String, String> = hashMapOf()
+
+    val comments: HashMap<String, String> = hashMapOf(),
+    val follows: HashMap<String, Boolean> = hashMapOf(),
+    val likes: HashMap<String, Boolean> = hashMapOf()
 ): Serializable
 
 data class Comment(

@@ -11,10 +11,7 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
-import io.untaek.animal_new.type.Content
-import io.untaek.animal_new.type.Post
-import io.untaek.animal_new.type.Uploading
-import io.untaek.animal_new.type.UserDetail
+import io.untaek.animal_new.type.*
 import io.untaek.animal_new.util.ContentUtil
 import io.untaek.animal_new.viewmodel.UploadViewModel
 import java.lang.Exception
@@ -87,17 +84,18 @@ object Fire {
 
     }
 
-    fun getUserDetailById(id: String) {
+    fun getUserDetailById(id: String) : UserDetail? {
+        var userDetail :UserDetail = UserDetail()
         FirebaseFirestore.getInstance()
             .collection(USERS)
             .document(id)
             .get()
             .addOnSuccessListener {
-                val userDetail = it.toObject(UserDetail::class.java)
+                userDetail = it.toObject(UserDetail::class.java) as UserDetail
             }
             .addOnFailureListener {
-
             }
+        return userDetail
     }
 
     /**

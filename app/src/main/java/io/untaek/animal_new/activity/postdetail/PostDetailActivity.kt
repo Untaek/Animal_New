@@ -1,6 +1,7 @@
 package io.untaek.animal_new.activity.postdetail
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
@@ -16,8 +17,12 @@ class PostDetailActivity: AppCompatActivity() {
         val binding: ActivityPostDetailBinding = DataBindingUtil.setContentView(this, R.layout.activity_post_detail)
 
         val post = intent.getSerializableExtra("post") as Post
-
+        Log.e("ㅋㅋㅋ", "postdetail")
         binding.viewPager.adapter = PostDetailFragmentAdapter(supportFragmentManager)
-        binding.vm = ViewModelProviders.of(this, PostDetailViewModel.PostDetailViewModelFactory(post)).get(PostDetailViewModel::class.java)
+        Log.e("ㅋㅋㅋ", "postdetail adapter")
+        binding.vm = ViewModelProviders.of(this, PostDetailViewModel.PostDetailViewModelFactory(post))
+            .get(PostDetailViewModel::class.java)
+
+        Log.e("ㅋㅋㅋ", "binding.vm")
     }
 }

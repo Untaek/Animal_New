@@ -15,6 +15,7 @@ import io.reactivex.schedulers.Schedulers
 import io.untaek.animal_new.type.Comment
 import io.untaek.animal_new.type.Post
 import io.untaek.animal_new.type.User
+import io.untaek.animal_new.type.UserDetail
 import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
@@ -22,6 +23,20 @@ import kotlin.collections.ArrayList
 object Reactive {
     data class LastSeen(val documentSnapshot: DocumentSnapshot?)
     data class LikeState(val post: Post, val loading: Boolean)
+
+    private fun loadUserDetail(user : User) : UserDetail =
+        Observable.create { sub ->
+            FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(user.id)
+                .get()
+                .addOnSuccessListener {
+                    val userDetail = it.documents.map { doc ->
+                        doc.toObject(UserDetail::class.java)!!.apply { id = doc.id }
+                    }
+                    return userDetail
+                }
+        }
 
     private fun loadFirstTimelineObservable(limit: Int) =
         Observable.create(ObservableOnSubscribe<Pair<LastSeen, List<Post>>> { sub ->
@@ -57,6 +72,41 @@ object Reactive {
                 }
     })
 
+
+
+    private fun loadFirstMyPageObservable(limit: Int) =
+        Observable.create(ObservableOnSubscribe<Pair<LastSeen, List<Post>>> { sub ->
+            FirebaseFirestore.getInstance()
+                .collection("posts")
+                .whereEqualTo("user.id", "dbsdlswp")
+                .limit(limit.toLong())
+                .get()
+                .addOnSuccessListener {
+                    Log.d("Reactive", "call loadFirstTimelineObservable")
+                    val posts = it.documents.map { doc ->
+                        doc.toObject(Post::class.java)!!.apply { id = doc.id }
+                    }
+                    sub.onNext(Pair(LastSeen(it.documents.lastOrNull()), posts))
+                    sub.onComplete()
+                }
+        })
+
+    private fun loadMyPageObservable(limit: Int, lastSeen: DocumentSnapshot) =
+        Observable.create(ObservableOnSubscribe<Pair<LastSeen, List<Post>>> { sub ->
+            FirebaseFirestore.getInstance()
+                .collection("posts")
+                .whereEqualTo("user.id", "dbsdlswp")
+                .startAfter(lastSeen)
+                .limit(limit.toLong())
+                .get()
+                .addOnSuccessListener {
+                    val posts = it.documents.map { doc ->
+                        doc.toObject(Post::class.java)!!.apply { id = doc.id }
+                    }
+                    sub.onNext(Pair(LastSeen(it.documents.lastOrNull()), posts))
+                    sub.onComplete()
+                }
+        })
     private fun getLikeObservable(post: Post): Observable<Post> {
         return Observable.create { sub ->
             FirebaseFirestore.getInstance()
@@ -238,6 +288,48 @@ object Reactive {
      ************************/
 
     @SuppressLint("CheckResult")
+    fun loadMyPage(limit: Int, lastSeen: DocumentSnapshot): Observable<Pair<DocumentSnapshot?, List<Post>>> {
+        Log.d("Reactive", "call loadMyPage")
+        val observer = loadMyPageObservable(limit, lastSeen).publish()
+        val ob1 = observer.map { it.first }
+        val ob2 = observer.flatMapIterable { it.second }
+            .flatMap(this::getLikeObservable)
+            .toList()
+            .map { it.sortedByDescending { p -> p.total_likes }}
+            .toObservable()
+
+        val result= ConnectableObservable
+            .zip(ob1, ob2, BiFunction<LastSeen, List<Post>, Pair<DocumentSnapshot?, List<Post>>>{ t1, t2 ->
+                Pair(t1.documentSnapshot, t2)
+            })
+
+        observer.connect()
+        return result
+    }
+    @SuppressLint("CheckResult")
+    fun loadFirstMyPage(limit: Int): Observable<Pair<DocumentSnapshot?, List<Post>>> {
+        Log.d("Reactive", "call loadFirstMyPage")
+        val observer = loadFirstMyPageObservable(limit).publish()
+        val ob1 = observer
+            .map { it.first }
+        val ob2 = observer.flatMapIterable { it.second }
+            .flatMap(this::getLikeObservable)
+            .flatMap(this::getPopularCommentsObservable)
+            .toList()
+            .map { it.sortedByDescending { p -> p.total_likes }}
+            .toObservable()
+
+        val result= ConnectableObservable
+            .zip(ob1, ob2, BiFunction<LastSeen, List<Post>, Pair<DocumentSnapshot?, List<Post>>>{ t1, t2 ->
+                Pair(t1.documentSnapshot, t2)
+            })
+            .subscribeOn(AndroidSchedulers.mainThread())
+
+        observer.connect()
+        return result
+    }
+
+    @SuppressLint("CheckResult")
     fun loadFirstTimeline(limit: Int): Observable<Pair<DocumentSnapshot?, List<Post>>> {
         Log.d("Reactive", "call loadFirstTimeline")
         val observer = loadFirstTimelineObservable(limit).publish()
@@ -301,4 +393,9 @@ object Reactive {
     fun like(post: Post): Observable<LikeState> {
         return likeObservable(post)
     }
+
+    fun getUserDetail(user : User) : UserDetail{
+        return loadUserDetail(user)
+    }
+
 }

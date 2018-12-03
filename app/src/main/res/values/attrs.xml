@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <attr name="icon" format="reference"/>
+    <attr name="count" format="integer"/>
+
     <declare-styleable name="TextWithIcon">
-        <attr name="icon"/>
-        <attr name="count" format="integer"/>
+        <attr name="icon" />
+        <attr name="count"/>
         <attr name="color" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="TextWithText">
+        <attr name="name" format="string"/>
+        <attr name="count"/>
     </declare-styleable>
 
     <declare-styleable name="PickContentButton">
