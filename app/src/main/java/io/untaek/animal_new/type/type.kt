@@ -32,8 +32,9 @@ data class User(
 
 data class UserDetail(
     val user: User = User(),
-    val total_likes: Long = 0,
-    val total_followers: Int = 0,
+    val total_posts: Int = 10,
+    val total_likes: Int = 8,
+    val total_followers: Int = 2,
     val follows: HashMap<String, String> = hashMapOf()
 ): Serializable
 

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools" xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
         <variable name="vm" type="io.untaek.animal_new.viewmodel.PostDetailViewModel"/>
     </data>
@@ -16,7 +18,7 @@
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView2" android:id="@+id/constraintLayout4">
+                app:layout_constraintBottom_toBottomOf="@+id/imageView_userImage_myPage" android:id="@+id/constraintLayout4">
             <FrameLayout
                     android:onClick="@{(v) -> vm.download(v, vm.post.content)}"
                     android:backgroundTint="@color/colorPrimary"

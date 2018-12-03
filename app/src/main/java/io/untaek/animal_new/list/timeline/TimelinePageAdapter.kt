@@ -32,21 +32,17 @@ class TimelinePageAdapter(fragmentActivity: FragmentActivity): PagedListAdapter<
             }
         }
     }
-
     val vm = ViewModelProviders.of(fragmentActivity).get(TimelineViewModel::class.java)
-
     init {
         vm.pagedTimeline.observe(fragmentActivity, Observer {
             submitList(it)
         })
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemListTimelineBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         binding.handler = Handler()
         return ViewHolder(binding)
     }
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
         if(item != null) {
@@ -56,7 +52,6 @@ class TimelinePageAdapter(fragmentActivity: FragmentActivity): PagedListAdapter<
             holder.clear()
         }
     }
-
     open class ViewHolder(val binding: ItemListTimelineBinding): RecyclerView.ViewHolder(binding.root){
         fun bind(post: Post){
             binding.post = post
@@ -66,9 +61,7 @@ class TimelinePageAdapter(fragmentActivity: FragmentActivity): PagedListAdapter<
             binding.post = Post()
         }
     }
-
     class Handler {
-
         fun onClickUserImageAndName(view: View, post: Post) {
             Toast.makeText(view.context, "onClickUserImageAndName", Toast.LENGTH_SHORT).show()
             val start = System.currentTimeMillis()

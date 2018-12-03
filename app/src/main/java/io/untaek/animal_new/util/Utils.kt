@@ -24,6 +24,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
+import io.untaek.animal_new.R
 import io.untaek.animal_new.component.PickContentButton
 import io.untaek.animal_new.type.Content
 import io.untaek.animal_new.viewmodel.UploadViewModel
@@ -71,6 +72,23 @@ fun load(imageView: ImageView, content: Content) {
     val options = contentImageOptions(screen.x, content.height)
 
     //imageView.layoutParams = ConstraintLayout.LayoutParams(screen.x, content.height)
+
+    Glide.with(imageView).also { if (type == "gif") it.asGif() }
+        .load(content.url)
+        .transition(DrawableTransitionOptions.withCrossFade(500))
+        .apply(options)
+        .thumbnail(0.1f)
+        .into(imageView)
+}
+
+@BindingAdapter("recyclerViewImage")
+fun load_recyclerViewImage(imageView: ImageView, content: Content) {
+    /**
+     * content.mime could be like a image/jpeg or image/png or image/gif etc.
+     */
+    val type = content.mime.split("/")[1]
+    val screen = Point().also { (imageView.context as Activity).windowManager.defaultDisplay.getSize(it) }
+    val options = contentImageOptions(screen.x/3-4, screen.x/3-4)
 
     Glide.with(imageView).also { if (type == "gif") it.asGif() }
         .load(content.url)
