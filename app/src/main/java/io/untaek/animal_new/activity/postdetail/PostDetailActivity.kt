@@ -18,6 +18,7 @@ class PostDetailActivity: AppCompatActivity() {
         val post = intent.getSerializableExtra("post") as Post
 
         binding.viewPager.adapter = PostDetailFragmentAdapter(supportFragmentManager)
+        binding.viewPager.currentItem = if(intent.getBooleanExtra("comment", false)) 1 else 0
         binding.vm = ViewModelProviders.of(this, PostDetailViewModel.PostDetailViewModelFactory(post)).get(PostDetailViewModel::class.java)
     }
 }

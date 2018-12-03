@@ -1,5 +1,6 @@
 package io.untaek.animal_new.viewmodel
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.databinding.ObservableArrayList
 import androidx.lifecycle.MutableLiveData
@@ -27,6 +28,7 @@ class TimelineViewModel: BaseViewModel() {
         }
     }
 
+    @SuppressLint("CheckResult")
     fun refreshTimeline() {
         refreshState.postValue(true)
         timeline.clear()
@@ -39,6 +41,7 @@ class TimelineViewModel: BaseViewModel() {
         }
     }
 
+    @SuppressLint("CheckResult")
     fun loadMore() {
         if(lastSeen != null) {
             refreshState.postValue(true)
@@ -47,6 +50,15 @@ class TimelineViewModel: BaseViewModel() {
                 timeline.addAll(it.second)
                 refreshState.postValue(false)
             }
+        }
+    }
+
+    @SuppressLint("CheckResult")
+    fun clickLike(post: Post) {
+        val i = timeline.indexOf(post)
+        Reactive.like(post).subscribe {
+            if(timeline.size > i)
+                timeline[i] = it.post
         }
     }
 

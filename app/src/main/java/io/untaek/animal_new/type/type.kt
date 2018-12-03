@@ -11,12 +11,12 @@ data class Post(
     var id: String = "",
     val user: User = User(),
     val description: String = "",
-    val time_stamp: Date = Date(),
     val content: Content = Content(),
+    val tags: Map<String, String> = hashMapOf(),
     val total_likes: Int = 0,
     val total_comments: Int = 0,
+    val time_stamp: Date = Date(),
     var like: Boolean = false,
-
     var comments: ArrayList<Comment> = arrayListOf()
 ): Serializable
 

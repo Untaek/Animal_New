@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
-        <variable name="upload" type="io.untaek.animal_new.type.Uploading"/>
+        <variable name="uploadState" type="io.untaek.animal_new.Reactive.UploadState"/>
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         <ImageView
-
                 android:src="@drawable/ic_photo_library_black_24dp"
                 android:layout_width="56dp"
                 android:layout_height="56dp" android:id="@+id/imageView3"/>
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{String.valueOf(upload.progress)}"
+                android:text="@{String.valueOf(uploadState.progress)}"
                 app:layout_constraintStart_toEndOf="@+id/imageView3"
                 android:layout_marginStart="8dp" android:layout_marginTop="8dp"
                 app:layout_constraintTop_toTopOf="parent" android:id="@+id/textView3"/>
         <ProgressBar
-                android:progress="@{upload.progress}"
+                android:progress="@{uploadState.progress}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 style="@android:style/Widget.Material.ProgressBar.Horizontal"

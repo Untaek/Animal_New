@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.untaek.animal_new.databinding.TabUploadBinding
 import io.untaek.animal_new.list.upload.UploadAdapter
+import io.untaek.animal_new.util.bind
 import io.untaek.animal_new.viewmodel.UploadViewModel
 
 class UploadFragment: Fragment() {
@@ -25,8 +26,9 @@ class UploadFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         val binding = TabUploadBinding.inflate(inflater, container, false)
+        binding.vm = vm
         binding.uploadStatusContainer.adapter = UploadAdapter(this.requireActivity())
-        binding.uploadStatusContainer.layoutManager = LinearLayoutManager(this.requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.uploadStatusContainer.layoutManager = LinearLayoutManager(this.requireContext(), LinearLayoutManager::VERTICAL.get(), false)
         return binding.root
     }
 

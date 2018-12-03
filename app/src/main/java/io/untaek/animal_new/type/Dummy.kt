@@ -16,6 +16,6 @@ object Dummy {
         "https://cdn.pixabay.com/photo/2016/02/19/15/46/dog-1210559__340.jpg",
         1000, 700)
 
-    val post1 = Post("postId", User(), "hello", Date(), content1)
-    val post2 = Post("postId", User(), "good", Date(), content2)
+    val post1 = Post("postId", User(), "hello", content1)
+    val post2 = Post("postId", User(), "good", content2)
 }
