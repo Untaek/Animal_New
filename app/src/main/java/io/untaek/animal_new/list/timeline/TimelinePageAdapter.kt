@@ -12,12 +12,15 @@ import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
+import io.untaek.animal_new.Reactive
 import io.untaek.animal_new.activity.UserDetailActivity
 import io.untaek.animal_new.activity.postdetail.PostDetailActivity
+import io.untaek.animal_new.component.TextWithIcon
 import io.untaek.animal_new.databinding.ItemListTimelineBinding
 import io.untaek.animal_new.type.Post
 import io.untaek.animal_new.viewmodel.TimelineViewModel
 
+@Deprecated("Updating Specific item is not working")
 class TimelinePageAdapter(fragmentActivity: FragmentActivity): PagedListAdapter<Post, TimelinePageAdapter.ViewHolder>(
     DIFF_CALLBACK
 ) {
@@ -32,17 +35,26 @@ class TimelinePageAdapter(fragmentActivity: FragmentActivity): PagedListAdapter<
             }
         }
     }
+
     val vm = ViewModelProviders.of(fragmentActivity).get(TimelineViewModel::class.java)
+
     init {
         vm.pagedTimeline.observe(fragmentActivity, Observer {
+            vm.refreshState.postValue(false)
             submitList(it)
         })
     }
+
+    fun refresh() {
+        vm.refresh()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemListTimelineBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        binding.handler = Handler()
+        //binding.handler =
         return ViewHolder(binding)
     }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
         if(item != null) {
@@ -52,6 +64,7 @@ class TimelinePageAdapter(fragmentActivity: FragmentActivity): PagedListAdapter<
             holder.clear()
         }
     }
+
     open class ViewHolder(val binding: ItemListTimelineBinding): RecyclerView.ViewHolder(binding.root){
         fun bind(post: Post){
             binding.post = post
@@ -61,19 +74,20 @@ class TimelinePageAdapter(fragmentActivity: FragmentActivity): PagedListAdapter<
             binding.post = Post()
         }
     }
-    class Handler {
-        fun onClickUserImageAndName(view: View, post: Post) {
-            Toast.makeText(view.context, "onClickUserImageAndName", Toast.LENGTH_SHORT).show()
-            val start = System.currentTimeMillis()
 
-            FirebaseFirestore.getInstance()
-                .collection("users")
-                .document(post.user.id)
-                .get()
-                .addOnSuccessListener {
-                    val finish = System.currentTimeMillis() - start
-                    Toast.makeText(view.context, "${it.id}, it takes $finish ms", Toast.LENGTH_SHORT).show()
-                }
+    class Handler(val vm: TimelineViewModel) {
+        fun onClickUserImageAndName(view: View, post: Post) {
+//            Toast.makeText(view.context, "onClickUserImageAndName", Toast.LENGTH_SHORT).show()
+//            val start = System.currentTimeMillis()
+//
+//            FirebaseFirestore.getInstance()
+//                .collection("users")
+//                .document(post.user.id)
+//                .get()
+//                .addOnSuccessListener {
+//                    val finish = System.currentTimeMillis() - start
+//                    Toast.makeText(view.context, "${it.id}, it takes $finish ms", Toast.LENGTH_SHORT).show()
+//                }
 
             val intent = Intent(view.context, UserDetailActivity::class.java).apply {
                 putExtra("user", post.user)
@@ -81,6 +95,10 @@ class TimelinePageAdapter(fragmentActivity: FragmentActivity): PagedListAdapter<
             view.context.startActivity(intent)
         }
         fun onClickLike(view: View, post: Post) {
+            val i = vm.pagedTimeline.value?.indexOf(post)!!
+            Reactive.like(post).subscribe {
+
+            }
             Toast.makeText(view.context, "onClickLike", Toast.LENGTH_SHORT).show()
         }
         fun onClickContent(view: View, post: Post) {

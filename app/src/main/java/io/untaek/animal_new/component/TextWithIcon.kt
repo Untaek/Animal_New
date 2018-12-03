@@ -10,42 +10,48 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.Bindable
 import androidx.databinding.ObservableInt
+import io.reactivex.Observable
 import io.untaek.animal_new.R
+import io.untaek.animal_new.databinding.ComponentTextWithIconBinding
 import kotlinx.android.synthetic.main.component_text_with_icon.view.*
 
 class TextWithIcon: ConstraintLayout {
-    var count: Int = 0
-    var icon: Drawable = context.getDrawable(R.drawable.ic_bone)!!
-    var color: Int = android.R.color.black
+    lateinit var binding: ComponentTextWithIconBinding
+
+    var count = 0
+    set(value) {
+        binding.textViewLike.text = value.toString()
+    }
+
+    var icon = context.getDrawable(R.drawable.ic_bone)
+    set(value) {
+        binding.iconContainer.background = value
+    }
+
+    var color = Color.BLACK
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
         Log.d("TextWithIcon", "second constructor")
+        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        binding = ComponentTextWithIconBinding.inflate(inflater, this, false)
+
         context.theme.obtainStyledAttributes(
             attrs,
             R.styleable.TextWithIcon,
             0, 0).apply {
 
             try {
-                count = getInteger(R.styleable.TextWithIcon_count, 0)
-                icon = getDrawable(R.styleable.TextWithIcon_icon)!!
-                color = getColor(R.styleable.TextWithIcon_color, 0)
-                Log.d("TextWithIcon", "second constructor$count")
+                binding.count = getInteger(R.styleable.TextWithIcon_count, 0)
+                binding.icon = getDrawable(R.styleable.TextWithIcon_icon)
+                binding.color = getColor(R.styleable.TextWithIcon_color, Color.BLACK)
+                Log.d("TextWithIcon", "second constructor${binding.count}")
             }
             finally {
                 recycle()
             }
         }
 
-        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val view = inflater.inflate(R.layout.component_text_with_icon, this, false)
-        view.textView_like.text = count.toString()
-        view.icon.background = icon
-        if(color != 0) {
-            view.textView_like.setTextColor(color)
-            view.icon.background.setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
-        }
-
-        addView(view)
+        addView(binding.root)
     }
 }

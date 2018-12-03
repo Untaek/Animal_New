@@ -19,11 +19,5 @@ class PostDetailActivity: AppCompatActivity() {
 
         binding.viewPager.adapter = PostDetailFragmentAdapter(supportFragmentManager)
         binding.vm = ViewModelProviders.of(this, PostDetailViewModel.PostDetailViewModelFactory(post)).get(PostDetailViewModel::class.java)
-
-        /**
-         * Initialize comments list
-         */
-        //binding.vm?.loadComments()
-        binding.vm?.loadDummyComments()
     }
 }

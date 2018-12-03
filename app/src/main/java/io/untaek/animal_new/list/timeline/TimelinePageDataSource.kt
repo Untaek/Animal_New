@@ -1,18 +1,19 @@
 package io.untaek.animal_new.list.timeline
 
+import android.util.Log
 import androidx.paging.*
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
+import io.untaek.animal_new.Reactive
 import io.untaek.animal_new.type.Post
 
+@Deprecated("Updating Specific item is not working")
 class TimelinePageDataSource {
     companion object {
         val config = PagedList.Config.Builder()
             .setEnablePlaceholders(true)
-            .setInitialLoadSizeHint(7)
-            .setPageSize(6)
-            .setPrefetchDistance(6)
+            .setInitialLoadSizeHint(4)
+            .setPageSize(4)
+            .setPrefetchDistance(4)
             .build()
     }
 
@@ -28,31 +29,30 @@ class TimelinePageDataSource {
             params: LoadInitialParams<DocumentSnapshot>,
             callback: LoadInitialCallback<DocumentSnapshot, Post>
         ) {
-            FirebaseFirestore.getInstance()
-                .collection("posts")
-                .orderBy("time_stamp", Query.Direction.DESCENDING)
-                .limit(params.requestedLoadSize.toLong())
-                .get()
-                .addOnSuccessListener {
-                    callback.onResult(it.toObjects(Post::class.java), null, it.documents.lastOrNull())
+            Log.d("TimelineSource", "loadInitial")
+            Reactive.loadFirstTimeline(params.requestedLoadSize).also {
+                it.subscribe { pair ->
+                    Log.d("TimelineSource", pair.second.toString())
+                    callback.onResult(pair.second, null, pair.first)
                 }
+            }
         }
 
         override fun loadAfter(
             params: LoadParams<DocumentSnapshot>,
             callback: LoadCallback<DocumentSnapshot, Post>
         ) {
-            FirebaseFirestore.getInstance()
-                .collection("posts")
-                .orderBy("time_stamp", Query.Direction.DESCENDING)
-                .startAfter(params.key)
-                .limit(params.requestedLoadSize.toLong())
-                .get()
-                .addOnSuccessListener {
-                    callback.onResult(it.toObjects(Post::class.java), it.documents.lastOrNull())
+            Log.d("TimelineSource", "loadAfter")
+            Reactive.loadTimelinePage(params.requestedLoadSize, params.key).also {
+                it.subscribe { pair ->
+                    Log.d("TimelineSource", pair.second.toString())
+                    callback.onResult(pair.second, pair.first)
                 }
+            }
         }
 
-        override fun loadBefore(params: LoadParams<DocumentSnapshot>, callback: LoadCallback<DocumentSnapshot, Post>) {}
+        override fun loadBefore(params: LoadParams<DocumentSnapshot>, callback: LoadCallback<DocumentSnapshot, Post>) {
+
+        }
     }
 }

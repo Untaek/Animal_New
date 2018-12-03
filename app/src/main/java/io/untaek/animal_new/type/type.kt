@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.databinding.Bindable
 import java.io.Serializable
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 data class Post(
@@ -13,7 +14,10 @@ data class Post(
     val time_stamp: Date = Date(),
     val content: Content = Content(),
     val total_likes: Int = 0,
-    val total_comments: Int = 0
+    val total_comments: Int = 0,
+    var like: Boolean = false,
+
+    var comments: ArrayList<Comment> = arrayListOf()
 ): Serializable
 
 data class Content(
@@ -25,9 +29,9 @@ data class Content(
 ): Serializable
 
 data class User(
-    val id: String = "dbsdlswp",
-    val name : String = "inje",
-    val picture_url : String = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQA9SOXW-VUdPL1Ot0DoYxgxqZIKjMqnTbgKH25VGpqBQ8LR19XliyGGhbv"
+    val id: String = "UNTUTNTUTUNT",
+    val name : String = "Untaek Lim",
+    val picture_url : String = "https://scontent-sea1-1.cdninstagram.com/vp/3f8a5fd40e783db96306d09e87f1f5fa/5CADED2C/t51.2885-15/e35/15802351_328244704242314_237747850245570560_n.jpg?se=8&ig_cache_key=MTQxNzQzOTA5NDM5MjUxNDA5Nw%3D%3D.2"
 ): Serializable
 
 data class UserDetail(
@@ -39,10 +43,12 @@ data class UserDetail(
 ): Serializable
 
 data class Comment(
+    var id: String = "",
     val user: User = User(),
     val text: String = "",
-    val time_stamp: Date = Date()
-)
+    val time_stamp: Date = Date(),
+    val total_likes: Long = 0
+): Serializable
 
 data class Uploading(
     var progress: Int = 0,

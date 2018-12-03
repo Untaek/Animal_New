@@ -43,7 +43,7 @@ class PickContentButton: ConstraintLayout {
             try {
                 icon = getDrawable(R.styleable.PickContentButton_icon)!!
                 text = getString(R.styleable.PickContentButton_text)!!
-                type = getInteger(R.styleable.PickContentButton_type, GALLERY)
+                type = getInteger(R.styleable.PickContentButton_pick_type, GALLERY)
             }
             finally {
                 recycle()
