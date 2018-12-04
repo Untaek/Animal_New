@@ -21,19 +21,8 @@ class MyPageViewModel(val user : User = User()) : BaseViewModel(){
     var userDetail: ObservableField<UserDetail> = ObservableField(UserDetail())
     init {
         Log.d("ㅋㅋㅋ", user.toString())
-        Reactive.getUserDetail(user.id)
-            .subscribe {
 
-                Log.e("ㅋㅋㅋ", "ViewModel : it.id : "+ it.user.id)
-                userDetail.set(it)
-                Log.e("ㅋㅋㅋ", "ViewModel1 : userDetail.id"+ userDetail.get()?.user?.id)
-
-                userDetail.get()?.user = user
-                userDetail.notifyChange()
-
-                Log.e("ㅋㅋㅋ", "ViewModel2 : userDetail : "+userDetail.get())
-            }
-
+        reactiveGetUserDetail(user.id)
         loading = true
         Reactive.loadFirstMyPage(15, user.id).subscribe {
             loading = false
@@ -52,6 +41,10 @@ class MyPageViewModel(val user : User = User()) : BaseViewModel(){
             postList.addAll(it.second)
             refreshState.postValue(false)
         }
+
+        reactiveGetUserDetail(user.id)
+
+
     }
     fun loadMore() {
         if(lastSeen != null) {
@@ -62,6 +55,16 @@ class MyPageViewModel(val user : User = User()) : BaseViewModel(){
                 refreshState.postValue(false)
             }
         }
+        reactiveGetUserDetail(user.id)
+    }
+
+    fun reactiveGetUserDetail(userId : String){
+        Reactive.getUserDetail(user.id)
+            .subscribe {
+                userDetail.set(it)
+                userDetail.get()?.user = user
+                userDetail.notifyChange()
+            }
     }
 
     /**
@@ -71,7 +74,6 @@ class MyPageViewModel(val user : User = User()) : BaseViewModel(){
     class MyPageViewModelFactory(val user: User): ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             return modelClass.getConstructor(User::class.java).newInstance(user)
-
         }
     }
 //    private val dataSourceFactory = MyPageDataSource.MyPageSourceFactory()

@@ -8,10 +8,17 @@
         <variable name="vm" type="io.untaek.animal_new.viewmodel.MyPageViewModel"/>
     </data>
 
+    <in.srain.cube.views.ptr.PtrClassicFrameLayout
+            android:id="@+id/ptr_layout_mypage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+    >
     <androidx.constraintlayout.widget.ConstraintLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:id="@+id/constraintLayoutParent"
+    >
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -86,21 +93,20 @@
                     android:layout_weight="1" android:layout_gravity="center"/>
         </LinearLayout>
 
-        <in.srain.cube.views.ptr.PtrClassicFrameLayout
-                android:id="@+id/ptr_layout_mypage"
+
+
+        <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" android:layout_marginTop="20dp">
+                app:layout_constraintBottom_toBottomOf="parent" android:layout_marginTop="20dp"
+                android:id="@+id/recyclerView_myPage"
+                binding_mypage="@{vm.postList}">
 
-            <androidx.recyclerview.widget.RecyclerView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/recyclerView_myPage"
-                    binding_mypage="@{vm.postList}"
-            />
-        </in.srain.cube.views.ptr.PtrClassicFrameLayout>
+        </androidx.recyclerview.widget.RecyclerView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+    </in.srain.cube.views.ptr.PtrClassicFrameLayout>
 </layout>

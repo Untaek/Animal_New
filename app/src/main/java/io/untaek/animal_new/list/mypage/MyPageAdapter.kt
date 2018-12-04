@@ -16,6 +16,15 @@ import io.untaek.animal_new.type.User
 import io.untaek.animal_new.viewmodel.MyPageViewModel
 
 class MyPageAdapter (fragmentActivity: FragmentActivity) : RecyclerView.Adapter<MyPageAdapter.ViewHolder>(){
+
+    companion object {
+        const val FROM = "from"
+
+        const val FROM_UNKNOWN = -1
+        const val FROM_CONTENT = 0
+        const val FROM_COMMENT = 1
+        const val FROM_NOTIFICATION = 2
+    }
     val vm = ViewModelProviders.of(fragmentActivity).get(MyPageViewModel::class.java)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyPageAdapter.ViewHolder {
@@ -42,9 +51,7 @@ class MyPageAdapter (fragmentActivity: FragmentActivity) : RecyclerView.Adapter<
     }
 
     class Handler(val vm: MyPageViewModel){
-        fun onClickUserImageAndName(view: View, post: Post) {
 
-        }
         fun onClickLike(view: View, post: Post) {
             Toast.makeText(view.context, "onClickLike", Toast.LENGTH_SHORT).show()
         }
@@ -52,6 +59,17 @@ class MyPageAdapter (fragmentActivity: FragmentActivity) : RecyclerView.Adapter<
             Toast.makeText(view.context, "onClickContent", Toast.LENGTH_SHORT).show()
             val intent = Intent(view.context, PostDetailActivity::class.java).apply {
                 putExtra("post", post)
+                putExtra(PostDetailActivity.FROM, PostDetailActivity.FROM_CONTENT)
+                Log.d("ㅋㅋㅋ", "mypage - content click ")
+            }
+            view.context.startActivity(intent)
+        }
+        fun onClickComment(view: View, post: Post) {
+            Toast.makeText(view.context, "onClickComment", Toast.LENGTH_SHORT).show()
+            val intent = Intent(view.context, PostDetailActivity::class.java).apply {
+                putExtra("post", post)
+                putExtra(PostDetailActivity.FROM, PostDetailActivity.FROM_COMMENT)
+                Log.d("ㅋㅋㅋ", "mypage - comment click ")
             }
             view.context.startActivity(intent)
         }

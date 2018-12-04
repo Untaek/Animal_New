@@ -77,7 +77,7 @@ class MyPageFragment: Fragment() {
             binding.vm?.refreshMyPage()
         }
         override fun checkCanDoRefresh(frame: PtrFrameLayout?, content: View?, header: View?): Boolean {
-            return PtrDefaultHandler.checkContentCanBePulledDown(frame, binding.recyclerViewMyPage, header)
+            return PtrDefaultHandler.checkContentCanBePulledDown(frame, binding.constraintLayoutParent, header)
         }
     }
 

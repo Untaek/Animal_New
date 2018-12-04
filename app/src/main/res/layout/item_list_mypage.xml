@@ -49,6 +49,7 @@
                     app:layout_constraintStart_toStartOf="parent"
             />
             <io.untaek.animal_new.component.TextWithIcon
+                    android:onClick="@{(v) -> handler.onClickComment(v, post)}"
                     app:icon="@drawable/ic_chat_black_24dp"
                     app:count="@{post.total_comments}"
                     android:layout_width="wrap_content"
