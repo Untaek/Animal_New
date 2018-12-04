@@ -3,8 +3,8 @@
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
-        <import type="androidx.databinding.ObservableArrayList"/>
-        <variable name="user" type="io.untaek.animal_new.type.UserDetail"/>
+        <!--<import type="androidx.databinding.ObservableArrayList"/>-->
+        <!--<variable name="userDetail" type="io.untaek.animal_new.type.UserDetail"/>-->
         <variable name="vm" type="io.untaek.animal_new.viewmodel.MyPageViewModel"/>
     </data>
 
@@ -29,7 +29,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"/>
             <ImageView
-                    user_image="@{user.user.picture_url}"
+                    user_image="@{vm.user.picture_url}"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
                     android:id="@+id/imageView_userImage_myPage"
@@ -38,7 +38,7 @@
                     app:layout_constraintEnd_toEndOf="@+id/imageView_userBackImage_myPage"
                     app:layout_constraintBottom_toBottomOf="@+id/imageView_userBackImage_myPage"/>
             <TextView
-                    android:text="@{user.user.name}"
+                    android:text="@{vm.user.name}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" android:id="@+id/textView_userName_myPage"
                     android:layout_marginBottom="8dp"
@@ -58,28 +58,28 @@
                 app:layout_constraintStart_toStartOf="parent" android:gravity="center">
             <io.untaek.animal_new.component.TextWithText
                     app:name="POSTS"
-                    app:count="@{user.total_posts}"
+                    app:count="@{vm.userDetail.total_posts}"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/textWithText_post_myPage"
                     android:layout_weight="1" android:layout_gravity="center" android:foregroundGravity="center"/>
             <io.untaek.animal_new.component.TextWithText
                     app:name="LIKES"
-                    app:count="@{user.total_likes}"
+                    app:count="@{vm.userDetail.total_likes}"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/textWithIcon_like_myPage"
                     android:layout_weight="1" android:layout_gravity="center"/>
             <io.untaek.animal_new.component.TextWithText
                     app:name="FOLLOWER"
-                    app:count="@{user.total_followers}"
+                    app:count="@{vm.userDetail.total_followers}"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/textWithIcon_follower_myPage"
                     android:layout_weight="1" android:layout_gravity="center"/>
             <io.untaek.animal_new.component.TextWithText
                     app:name="FOLLOW"
-                    app:count="@{user.follows.size()}"
+                    app:count="@{vm.userDetail.follows.size()}"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/textWithIcon_follow_myPage"

@@ -1,6 +1,7 @@
 package io.untaek.animal_new.list.timeline
 
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,6 +56,7 @@ class TimelineAdapter(fragmentActivity: FragmentActivity): RecyclerView.Adapter<
             Toast.makeText(view.context, "onClickUserImageAndName", Toast.LENGTH_SHORT).show()
             val intent = Intent(view.context, UserDetailActivity::class.java).apply {
                 putExtra("user", post.user)
+                Log.e("ㅋㅋㅋ", "TimelineAdapter - userDetail id : "+post.user.id)
             }
             view.context.startActivity(intent)
         }

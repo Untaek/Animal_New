@@ -1,5 +1,6 @@
 package io.untaek.animal_new
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import android.util.Log
 import com.google.android.gms.tasks.Continuation
@@ -16,9 +17,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
 import io.reactivex.observables.ConnectableObservable
 import io.reactivex.schedulers.Schedulers
-import io.untaek.animal_new.type.Comment
-import io.untaek.animal_new.type.Post
-import io.untaek.animal_new.type.User
+import io.untaek.animal_new.type.*
+import io.untaek.animal_new.viewmodel.UploadViewModel
 import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
@@ -117,17 +117,24 @@ object Reactive {
                 }
         }
 
-    private fun loadUserDetail(user : User) : UserDetail =
+    private fun loadUserDetail(userId : String) : Observable<UserDetail> =
         Observable.create { sub ->
+            Log.e("ㅋㅋㅋ", "userDetail : "+userId)
             FirebaseFirestore.getInstance()
                 .collection("users")
-                .document(user.id)
+                .document(userId)
                 .get()
                 .addOnSuccessListener {
-                    val userDetail = it.documents.map { doc ->
-                        doc.toObject(UserDetail::class.java)!!.apply { id = doc.id }
-                    }
-                    return userDetail
+
+                    Log.e("ㅋㅋㅋ", "Reactivie loadUserDetail  - it : "+it)
+                    val userDetail = it.toObject(UserDetail::class.java)!!
+
+                    Log.e("ㅋㅋㅋ", "Reactivie loadUserDetail  - userDetail : "+userDetail)
+                    sub.onNext(userDetail)
+                    sub.onComplete()
+                }
+                .addOnFailureListener {
+                    sub.onError(it)
                 }
         }
 
@@ -167,11 +174,11 @@ object Reactive {
 
 
 
-    private fun loadFirstMyPageObservable(limit: Int) =
+    private fun loadFirstMyPageObservable(limit: Int, userId : String) =
         Observable.create(ObservableOnSubscribe<Pair<LastSeen, List<Post>>> { sub ->
             FirebaseFirestore.getInstance()
                 .collection("posts")
-                .whereEqualTo("user.id", "dbsdlswp")
+                .whereEqualTo("user.id", userId)
                 .limit(limit.toLong())
                 .get()
                 .addOnSuccessListener {
@@ -184,11 +191,11 @@ object Reactive {
                 }
         })
 
-    private fun loadMyPageObservable(limit: Int, lastSeen: DocumentSnapshot) =
+    private fun loadMyPageObservable(limit: Int, lastSeen: DocumentSnapshot, userId : String) =
         Observable.create(ObservableOnSubscribe<Pair<LastSeen, List<Post>>> { sub ->
             FirebaseFirestore.getInstance()
                 .collection("posts")
-                .whereEqualTo("user.id", "dbsdlswp")
+                .whereEqualTo("user.id", userId)
                 .startAfter(lastSeen)
                 .limit(limit.toLong())
                 .get()
@@ -401,9 +408,9 @@ object Reactive {
     }
 
     @SuppressLint("CheckResult")
-    fun loadMyPage(limit: Int, lastSeen: DocumentSnapshot): Observable<Pair<DocumentSnapshot?, List<Post>>> {
+    fun loadMyPage(limit: Int, lastSeen: DocumentSnapshot, userId : String): Observable<Pair<DocumentSnapshot?, List<Post>>> {
         Log.d("Reactive", "call loadMyPage")
-        val observer = loadMyPageObservable(limit, lastSeen).publish()
+        val observer = loadMyPageObservable(limit, lastSeen, userId).publish()
         val ob1 = observer.map { it.first }
         val ob2 = observer.flatMapIterable { it.second }
             .flatMap(this::getLikeObservable)
@@ -420,9 +427,9 @@ object Reactive {
         return result
     }
     @SuppressLint("CheckResult")
-    fun loadFirstMyPage(limit: Int): Observable<Pair<DocumentSnapshot?, List<Post>>> {
+    fun loadFirstMyPage(limit: Int, userId : String): Observable<Pair<DocumentSnapshot?, List<Post>>> {
         Log.d("Reactive", "call loadFirstMyPage")
-        val observer = loadFirstMyPageObservable(limit).publish()
+        val observer = loadFirstMyPageObservable(limit, userId).publish()
         val ob1 = observer
             .map { it.first }
         val ob2 = observer.flatMapIterable { it.second }
@@ -506,8 +513,9 @@ object Reactive {
         return likeObservable(post)
     }
 
-    fun getUserDetail(user : User) : UserDetail{
-        return loadUserDetail(user)
+    fun getUserDetail(userId : String) : Observable<UserDetail>{
+        return loadUserDetail(userId)
     }
+
 
 }

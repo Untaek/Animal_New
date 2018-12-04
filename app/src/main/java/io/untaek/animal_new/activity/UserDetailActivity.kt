@@ -4,24 +4,17 @@ import `in`.srain.cube.views.ptr.PtrDefaultHandler
 import `in`.srain.cube.views.ptr.PtrFrameLayout
 import `in`.srain.cube.views.ptr.PtrHandler
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import io.untaek.animal_new.Fire
 import io.untaek.animal_new.R
-import io.untaek.animal_new.Reactive
 import io.untaek.animal_new.databinding.TabMyPageBinding
 import io.untaek.animal_new.list.mypage.MyPageAdapter
-import io.untaek.animal_new.tab.fragment.MyPageFragment
 import io.untaek.animal_new.type.User
 import io.untaek.animal_new.type.UserDetail
 import io.untaek.animal_new.viewmodel.MyPageViewModel
@@ -32,37 +25,23 @@ class UserDetailActivity: AppCompatActivity() {
     lateinit var user : User
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        user = intent.getSerializableExtra("user") as User
 
         binding = DataBindingUtil.setContentView(this, R.layout.tab_my_page)
-
-        val user = intent.getSerializableExtra("user") as User
-
-        userdetail = Reactive.getUserDetail(user)
-        binding.user = userdetail
-        Log.e("ㅋㅋㅋ","1")
-
-
+        binding.vm = ViewModelProviders.of(this, MyPageViewModel.MyPageViewModelFactory(user)).get(MyPageViewModel::class.java)
 
         val pageAdapter = MyPageAdapter(this)
         val layoutManager = GridLayoutManager(this, 3)
-                binding.vm = ViewModelProviders
-            .of(this)
-            .get(MyPageViewModel::class.java)
-        Log.e("ㅋㅋㅋ","2")
 
         binding.recyclerViewMyPage.layoutManager = layoutManager
         binding.recyclerViewMyPage.adapter = pageAdapter
         binding.recyclerViewMyPage.addOnScrollListener(scrollListener)
 
-        Log.e("ㅋㅋㅋ","3")
         binding.ptrLayoutMypage.setPtrHandler(refreshHandler)
         binding.vm!!.refreshState.observe(this, Observer { loading ->
             if(loading == false)
                 binding.ptrLayoutMypage.refreshComplete()
         })
-
-        Log.e("ㅋㅋㅋ","4")
 
     }
     private val scrollListener = object : RecyclerView.OnScrollListener() {

@@ -82,7 +82,7 @@ class TimelinePageAdapter(fragmentActivity: FragmentActivity): PagedListAdapter<
 //
 //            FirebaseFirestore.getInstance()
 //                .collection("users")
-//                .document(post.user.id)
+//                .document(post.userDetail.id)
 //                .get()
 //                .addOnSuccessListener {
 //                    val finish = System.currentTimeMillis() - start
@@ -90,7 +90,7 @@ class TimelinePageAdapter(fragmentActivity: FragmentActivity): PagedListAdapter<
 //                }
 
             val intent = Intent(view.context, UserDetailActivity::class.java).apply {
-                putExtra("user", post.user)
+                putExtra("userDetail", post.user)
             }
             view.context.startActivity(intent)
         }

@@ -50,7 +50,7 @@ class CommentsAdapter(fragmentActivity: FragmentActivity): RecyclerView.Adapter<
                 }
 
             val intent = Intent(view.context, UserDetailActivity::class.java).apply {
-                putExtra("user", comment.user)
+                putExtra("userDetail", comment.user)
             }
             view.context.startActivity(intent)
         }

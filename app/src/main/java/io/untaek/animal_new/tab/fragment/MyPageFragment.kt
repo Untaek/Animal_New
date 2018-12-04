@@ -26,18 +26,17 @@ class MyPageFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         binding = TabMyPageBinding.inflate(inflater, container,false)
-        binding.user = UserDetail(User())
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val pageAdapter = MyPageAdapter(this.requireActivity())
-        val layoutManager = GridLayoutManager(context, 3)
-
         binding.vm = ViewModelProviders
-            .of(this.requireActivity())
+            .of(this.requireActivity(), MyPageViewModel.MyPageViewModelFactory(User()))
             .get(MyPageViewModel::class.java)
+
+        val pageAdapter = MyPageAdapter(this.requireActivity())             // my page
+        val layoutManager = GridLayoutManager(context, 3)
 
         binding.recyclerViewMyPage.layoutManager = layoutManager
         binding.recyclerViewMyPage.adapter = pageAdapter

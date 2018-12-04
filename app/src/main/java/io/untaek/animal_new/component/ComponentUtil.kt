@@ -16,7 +16,6 @@ import io.untaek.animal_new.activity.MainActivity
 import io.untaek.animal_new.type.Content
 import io.untaek.animal_new.type.Post
 import io.untaek.animal_new.viewmodel.PostDetailViewModel
-import me.originqiu.library.EditTag
 
 @BindingAdapter("onActionClicked")
 fun method3(editText: EditText, vm: PostDetailViewModel) {

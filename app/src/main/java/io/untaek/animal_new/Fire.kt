@@ -216,10 +216,10 @@ object Fire {
     }
 
 //
-//    fun checkFollow(myId:String, userId:String, callback: Callback<Boolean>){
+//    fun checkFollow(myId:String, userDetail:String, callback: Callback<Boolean>){
 //        fs().collection(USERS).document(myId).get().addOnSuccessListener {
 //            val follow : MutableMap<String,Boolean> = it[FOLLOW] as MutableMap<String,Boolean>
-//            val followFlag = follow[userId]
+//            val followFlag = follow[userDetail]
 //            if(followFlag== null){
 //                callback.onResult(false)
 //            }else{
@@ -229,10 +229,10 @@ object Fire {
 //        }
 //    }
 //
-//    fun follow(myId: String, userId: String) {          // myId 가 userId 를 follow
+//    fun follow(myId: String, userDetail: String) {          // myId 가 userDetail 를 follow
 //        val fs = fs()
 //        val myReference = fs.collection(USERS).document(myId)
-//        val userReference = fs.collection(USERS).document(userId)
+//        val userReference = fs.collection(USERS).document(userDetail)
 //        var follow: MutableMap<String, Boolean> = mutableMapOf()
 //
 //
@@ -241,7 +241,7 @@ object Fire {
 //                fs.collection(USERS).document(myId).get().addOnSuccessListener {
 //                    follow = it[FOLLOW] as MutableMap<String, Boolean>
 //                    Log.e("ㅋㅋㅋ", "firebase = follow "+follow["aaaa"])
-//                    follow.put(userId, true)            // myId 의 follows (map) 에 {userId, true} 추가.
+//                    follow.put(userDetail, true)            // myId 의 follows (map) 에 {userDetail, true} 추가.
 //                }
 //
 //                val targetPost = t.get(userReference)
@@ -252,10 +252,10 @@ object Fire {
 //        }
 //    }
 //
-//    fun unfollow(myId: String, userId: String) {
+//    fun unfollow(myId: String, userDetail: String) {
 //        val fs = fs()
 //        val myReference = fs.collection(USERS).document(myId)
-//        val userReference = fs.collection(USERS).document(userId)
+//        val userReference = fs.collection(USERS).document(userDetail)
 //        var follow: MutableMap<String, Boolean> = mutableMapOf()
 //        //var followers: MutableMap<String, Boolean> = mutableMapOf()
 //
@@ -264,10 +264,10 @@ object Fire {
 //            fs.runTransaction { t ->
 //                fs.collection(USERS).document(myId).get().addOnSuccessListener {
 //                    follow = it[FOLLOW] as MutableMap<String, Boolean>
-//                    follow.remove(userId)          // myId 의 follows (map) 에 {userId, true} 추가.
+//                    follow.remove(userDetail)          // myId 의 follows (map) 에 {userDetail, true} 추가.
 //                }
 //
-//                fs.collection(USERS).document(userId).get().addOnSuccessListener {
+//                fs.collection(USERS).document(userDetail).get().addOnSuccessListener {
 //                    //followers = it[FOLLOWERS] as MutableMap<String, Boolean>
 //                    //followers.put(myId, true)
 //                }

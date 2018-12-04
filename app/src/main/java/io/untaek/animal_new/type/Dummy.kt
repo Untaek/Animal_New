@@ -5,7 +5,6 @@ import java.util.*
 object Dummy {
 
     val dbsdlswp = UserDetail(
-        User(), 0, 0, 0, hashMapOf()
     )
 
     val content1 = Content(

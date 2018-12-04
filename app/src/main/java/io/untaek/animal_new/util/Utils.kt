@@ -37,6 +37,7 @@ import io.untaek.animal_new.list.upload.UploadAdapter
 import io.untaek.animal_new.type.Comment
 import io.untaek.animal_new.type.Content
 import io.untaek.animal_new.type.Post
+import io.untaek.animal_new.type.User
 import io.untaek.animal_new.viewmodel.UploadViewModel
 import java.io.File
 import java.util.*

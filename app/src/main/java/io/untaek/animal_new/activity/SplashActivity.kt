@@ -8,7 +8,7 @@ import com.google.firebase.auth.FirebaseAuth
 class SplashActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val intent = if (FirebaseAuth.getInstance().currentUser != null){
+        val intent = if (FirebaseAuth.getInstance().currentUser == null){
             Intent(this, MainActivity::class.java)
         }else {
             Intent(this, LoginActivity::class.java)

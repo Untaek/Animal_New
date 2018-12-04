@@ -29,18 +29,16 @@ data class Content(
 ): Serializable
 
 data class User(
-    val id: String = "UNTUTNTUTUNT",
-    val name : String = "Untaek Lim",
+    val id: String = "dbsdlswp",
+    val name : String = "inje",
     val picture_url : String = "https://scontent-sea1-1.cdninstagram.com/vp/3f8a5fd40e783db96306d09e87f1f5fa/5CADED2C/t51.2885-15/e35/15802351_328244704242314_237747850245570560_n.jpg?se=8&ig_cache_key=MTQxNzQzOTA5NDM5MjUxNDA5Nw%3D%3D.2"
 ): Serializable
 
 data class UserDetail(
-
-    val name : String = "inje",
-    val picture_url : String = "https://lh3.googleusercontent.com/-NY106fsyVQ0/AAAAAAAAAAI/AAAAAAAAA28/CvFPD-JjtrY/s96-c/photo.jpg",
-    val total_posts: Int = 10,
-    val total_likes: Int = 8,
-    val total_followers: Int = 2,
+    var user :User = User(),
+    val total_posts: Int = 0,
+    val total_likes: Int = 0,
+    val total_followers: Int = 0,
 
     val comments: HashMap<String, String> = hashMapOf(),
     val follows: HashMap<String, Boolean> = hashMapOf(),
