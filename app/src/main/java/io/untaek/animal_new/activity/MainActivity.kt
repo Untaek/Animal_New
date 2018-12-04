@@ -86,17 +86,17 @@ class MainActivity : AppCompatActivity() {
     private fun initNavigation() {
         val nav = binding.tab.custom()
             .addItem(tabItem(
-                R.drawable.ic_launcher_foreground,
-                R.drawable.ic_launcher_background, "Timeline"))
+                R.drawable.ic_bone,
+                R.drawable.ic_fill_bone, "Timeline"))
             .addItem(tabItem(
-                R.drawable.ic_launcher_foreground,
-                R.drawable.ic_launcher_background, "Rank"))
+                R.drawable.ic_bone,
+                R.drawable.ic_fill_bone, "Rank"))
             .addItem(tabItem(
-                R.drawable.ic_launcher_foreground,
-                R.drawable.ic_launcher_background, "Upload"))
+                R.drawable.ic_bone,
+                R.drawable.ic_fill_bone, "Upload"))
             .addItem(tabItem(
-                R.drawable.ic_launcher_foreground,
-                R.drawable.ic_launcher_background, "My Page"))
+                R.drawable.ic_bone,
+                R.drawable.ic_fill_bone, "My Page"))
             .build()
 
         nav.addSimpleTabItemSelectedListener { index, _ ->

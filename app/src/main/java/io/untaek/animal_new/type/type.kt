@@ -21,7 +21,7 @@ data class Post(
 ): Serializable
 
 data class Content(
-    val mime: String = "",
+    val mime: String = "image/jpeg",
     val file_name: String = "",
     val url: String = "https://firebasestorage.googleapis.com/v0/b/animal-f6c09/o/dg2.jpg?alt=media&token=ad76a8af-6f74-4eaa-bf0a-7b946f4551a2",
     val width: Int = 0,

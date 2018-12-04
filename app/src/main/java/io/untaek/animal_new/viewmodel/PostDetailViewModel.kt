@@ -12,13 +12,9 @@ import io.untaek.animal_new.Reactive
 import io.untaek.animal_new.type.Comment
 import io.untaek.animal_new.type.Post
 
-class PostDetailViewModel(val post: Post): BaseViewModel() {
-    val commentText = ObservableField<String>()
-    val comments = ObservableArrayList<Comment>()
-    val loading = ObservableBoolean(false)
-    var lastSeen: DocumentSnapshot? = null
-
-    init {
+class PostDetailViewModel: BaseViewModel {
+    constructor(post: Post) {
+        this.post.set(post)
         loading.set(true)
         val _sub = Reactive.loadFirstComments(post, 15)
             .subscribe {
@@ -28,6 +24,27 @@ class PostDetailViewModel(val post: Post): BaseViewModel() {
             }
     }
 
+    constructor(postId: String) {
+        loading.set(true)
+        val _sub1 = Reactive.loadPost(postId)
+            .subscribe {
+                this.post.set(it)
+            }
+        val _sub2 = Reactive
+            .loadFirstComments(Post(postId), 15)
+            .subscribe {
+                lastSeen = it.first
+                comments.addAll(it.second)
+                loading.set(false)
+            }
+    }
+
+    var post = ObservableField<Post>(Post())
+    val commentText = ObservableField<String>()
+    val comments = ObservableArrayList<Comment>()
+    val loading = ObservableBoolean(false)
+    private var lastSeen: DocumentSnapshot? = null
+
     @SuppressLint("CheckResult")
     fun sendNewComment() {
         val text = commentText.get() ?: ""
@@ -35,7 +52,7 @@ class PostDetailViewModel(val post: Post): BaseViewModel() {
             return
         }
         loading.set(true)
-        Reactive.sendNewComment(post, text)
+        Reactive.sendNewComment(post.get()!!, text)
             .subscribe {
                 Log.d(TAG, it.toString())
                 comments.add(0, it)
@@ -48,7 +65,7 @@ class PostDetailViewModel(val post: Post): BaseViewModel() {
     fun loadMoreComments(limit: Int) {
         loading.set(true)
         if (lastSeen != null){
-            Reactive.loadCommentsPage(post, limit, lastSeen!!)
+            Reactive.loadCommentsPage(post.get()!!, limit, lastSeen!!)
                 .subscribe {
                     lastSeen = it.first
                     comments.addAll(it.second)
@@ -57,17 +74,33 @@ class PostDetailViewModel(val post: Post): BaseViewModel() {
         }
     }
 
-//    /**
-//     * Paging
-//     */
-//    val comments2 = LivePagedListBuilder(
-//        CommentsPageDataSource.CommentsSourceFactory(),
-//        CommentsPageDataSource.config
-//    ).build()
+    @SuppressLint("CheckResult")
+    fun loadPost(postId: String) {
+        loading.set(true)
+        Reactive.loadPost(postId)
+            .subscribe {
+                this.post.set(it)
+            }
+    }
 
-    class PostDetailViewModelFactory(val post: Post): ViewModelProvider.Factory {
+    class PostDetailViewModelFactory: ViewModelProvider.Factory {
+        var post: Post? = null
+        var postId: String? = null
+
+        constructor(post: Post) {
+            this.post = post
+        }
+
+        constructor(postId: String) {
+            this.postId = postId
+        }
+
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return modelClass.getConstructor(Post::class.java).newInstance(post)
+            return if(post != null) {
+                modelClass.getConstructor(Post::class.java).newInstance(post)
+            } else {
+                modelClass.getConstructor(String::class.java).newInstance(postId)
+            }
         }
     }
 }
