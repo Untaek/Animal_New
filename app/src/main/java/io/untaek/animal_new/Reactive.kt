@@ -54,7 +54,7 @@ object Reactive {
     data class LikeState(val post: Post, val loading: Boolean)
     data class UploadState(val id: Int, val state: State, val progress: Int, val url: String?, val content: Content?, val post: Post?)
 
-    private fun currentUser(): User {
+    fun currentUser(): User {
         val user = FirebaseAuth.getInstance().currentUser
 
         return user?.let {

@@ -4,6 +4,7 @@ import `in`.srain.cube.views.ptr.PtrDefaultHandler
 import `in`.srain.cube.views.ptr.PtrFrameLayout
 import `in`.srain.cube.views.ptr.PtrHandler
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import io.untaek.animal_new.Reactive
 import io.untaek.animal_new.databinding.TabMyPageBinding
 import io.untaek.animal_new.list.mypage.MyPageAdapter
 import io.untaek.animal_new.type.User
@@ -31,9 +33,11 @@ class MyPageFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding.vm = ViewModelProviders
-            .of(this.requireActivity(), MyPageViewModel.MyPageViewModelFactory(User()))
+            .of(this.requireActivity(), MyPageViewModel.MyPageViewModelFactory(Reactive.currentUser()))
             .get(MyPageViewModel::class.java)
+
 
         val pageAdapter = MyPageAdapter(this.requireActivity())             // my page
         val layoutManager = GridLayoutManager(context, 3)
@@ -47,8 +51,6 @@ class MyPageFragment: Fragment() {
             if(loading == false)
                 binding.ptrLayoutMypage.refreshComplete()
         })
-
-
     }
     private val scrollListener = object : RecyclerView.OnScrollListener() {
         var visibleItemCount = 0

@@ -17,7 +17,7 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
+        binding = DataBindingUtil.setContentView(this, io.untaek.animal_new.R.layout.activity_login)
         binding.button.setOnClickListener {
             val providers = listOf(
                 AuthUI.IdpConfig.GoogleBuilder().build(),

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable name="post" type="io.untaek.animal_new.type.Post"/>
+        <variable name="handler" type="io.untaek.animal_new.list.mypage.MyPageAdapter.Handler"/>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:background="@drawable/border_gray"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        <ImageView
+                android:onClick="@{(v) -> handler.onClickContent(v, post)}"
+                recyclerViewImage="@{post.content}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView_myPage_item"
+                android:background="@drawable/border_black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="2dp"
+                android:layout_marginBottom="2dp" />
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:background="#70FFFFFF"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginEnd="2dp"
+                android:layout_marginStart="2dp"
+                android:layout_marginBottom="2dp">
+
+            <io.untaek.animal_new.component.TextWithIcon
+                    app:icon="@drawable/ic_fill_bone"
+                    app:count="@{post.total_likes}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent" android:id="@+id/textWithIcon4"
+                    app:layout_constraintStart_toStartOf="parent"
+            />
+            <io.untaek.animal_new.component.TextWithIcon
+                    app:icon="@drawable/ic_chat_black_24dp"
+                    app:count="@{post.total_comments}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:id="@+id/textWithIcon3"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
