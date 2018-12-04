@@ -9,38 +9,44 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             android:outlineProvider="bounds"
             android:elevation="4dp"
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:background="#ffffff"
                 android:elevation="0dp"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="56dp"
-                app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" android:id="@+id/constraintLayout">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:id="@+id/constraintLayout">
 
             <TextView
                     time="@{post.time_stamp}"
                     android:layout_width="wrap_content"
                     android:layout_height="20dp" android:id="@+id/textView_timeStamp_timeline_item"
-                    android:gravity="right" app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="16dp"
-                    android:layout_marginEnd="30dp" app:layout_constraintBottom_toBottomOf="parent"
+                    android:gravity="end"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="30dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     android:layout_marginBottom="16dp"/>
             <TextView
                     android:onClick="@{(v) -> handler.onClickUserImageAndName(v, post)}"
                     android:text="@{post.user.name}"
                     android:layout_width="0dp"
-                    android:layout_height="20dp" android:id="@+id/textView_userName_timeline_item"
+                    android:layout_height="20dp"
+                    android:id="@+id/textView_userName_timeline_item"
                     app:layout_constraintTop_toTopOf="parent"
                     android:layout_marginTop="16dp"
                     app:layout_constraintStart_toEndOf="@+id/imageView_userImage_timeline_item"
                     android:layout_marginStart="8dp"
                     app:layout_constraintEnd_toStartOf="@+id/textView_timeStamp_timeline_item"
                     android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="16dp" app:layout_constraintBottom_toBottomOf="parent"/>
+                    android:layout_marginBottom="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
             <ImageView
                     android:onClick="@{(v) -> handler.onClickUserImageAndName(v, post)}"
                     user_image="@{post.user.picture_url}"
@@ -49,16 +55,19 @@
                     android:id="@+id/imageView_userImage_timeline_item"
                     app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginStart="16dp"
-                    app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="16dp"
-                    app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="16dp"/>
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginBottom="16dp"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <FrameLayout
                 android:background="#ddd"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/frameLayout" app:layout_constraintStart_toStartOf="parent"
+                android:id="@+id/frameLayout"
+                app:layout_constraintTop_toBottomOf="@id/constraintLayout"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
             <ImageView
                     android:onClick="@{(v) -> handler.onClickContent(v, post)}"
@@ -72,56 +81,66 @@
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
-                android:background="#dddddd"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintTop_toBottomOf="@+id/frameLayout">
+                app:layout_constraintTop_toBottomOf="@id/frameLayout"
+                android:id="@+id/constraintLayout4"
+                android:background="#dddddd"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+
+            <io.untaek.animal_new.component.TextWithIcon
+                    app:icon="@{post.like ? @drawable/ic_fill_bone : @drawable/ic_bone}"
+                    android:onClick="@{(v) -> handler.onClickLike(v, post)}"
+                    app:count="@{post.total_likes}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textWithIcon"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"/>
+
+            <io.untaek.animal_new.component.TextWithIcon
+                    app:icon="@drawable/ic_chat_black_24dp"
+                    android:onClick="@{(v) -> handler.onClickComment(v, post)}"
+                    app:count="@{post.total_comments}"
+                    android:minHeight="30dp"
+                    android:minWidth="30dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textWithIcon2"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textWithIcon"
+                    app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp" android:layout_marginBottom="8dp"/>
+
             <TextView
                     android:text="@{post.description}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/textView_description_timeline_item"
                     app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="16dp"
-                    app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="16dp"
-                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintEnd_toEndOf="@id/textWithIcon" android:layout_marginEnd="16dp"
                     app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="8dp"
-                    android:layout_marginTop="6dp" app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"/>
-            <androidx.constraintlayout.widget.ConstraintLayout
-                    android:background="#eeeeee"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" android:id="@+id/constraintLayout2">
+                    tools:text="@tools:sample/cities" app:layout_constraintTop_toBottomOf="@id/chips"
+                    android:layout_marginTop="8dp"/>
 
-                <io.untaek.animal_new.component.TextWithIcon
-                        app:icon="@{post.like ? @drawable/ic_fill_bone : @drawable/ic_bone}"
-                        android:onClick="@{(v) -> handler.onClickLike(v, post)}"
-                        app:count="@{post.total_likes}"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/textWithIcon"
-                        app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"
-                        android:layout_marginTop="4dp" android:layout_marginStart="4dp"
-                        app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="4dp"/>
 
-                <io.untaek.animal_new.component.TextWithIcon
-                        app:icon="@drawable/ic_chat_black_24dp"
-                        android:onClick="@{(v) -> handler.onClickComment(v, post)}"
-                        app:count="@{post.total_comments}"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:layout_marginTop="4dp"
-                        app:layout_constraintStart_toEndOf="@+id/textWithIcon" android:layout_marginStart="8dp"
-                        app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="4dp"/>
+            <com.google.android.material.chip.ChipGroup
+                    android:layout_marginStart="8dp"
+                    android:id="@+id/chips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="8dp">
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
+            </com.google.android.material.chip.ChipGroup>
+            <!--<com.google.android.material.chip.ChipGroup android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content">-->
+            <!--<com.google.android.material.chip.Chip-->
+            <!--android:text="HAHAHAHA"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"/>-->
+            <!--</com.google.android.material.chip.ChipGroup>-->
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
