@@ -7,6 +7,9 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.Bindable
 import androidx.databinding.ObservableInt
@@ -30,13 +33,13 @@ class TextWithIcon: ConstraintLayout {
 
     var color = Color.BLACK
 
-    constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+    {
         Log.d("TextWithIcon", "second constructor")
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        binding = ComponentTextWithIconBinding.inflate(inflater, this, false)
+        binding = ComponentTextWithIconBinding.inflate(inflater, this, true)
 
-        context.theme.obtainStyledAttributes(
+        context.obtainStyledAttributes(
             attrs,
             R.styleable.TextWithIcon,
             0, 0).apply {
@@ -46,12 +49,12 @@ class TextWithIcon: ConstraintLayout {
                 binding.icon = getDrawable(R.styleable.TextWithIcon_icon)
                 binding.color = getColor(R.styleable.TextWithIcon_color, Color.BLACK)
                 Log.d("TextWithIcon", "second constructor${binding.count}")
+
             }
             finally {
                 recycle()
             }
         }
-
-        addView(binding.root)
     }
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 }

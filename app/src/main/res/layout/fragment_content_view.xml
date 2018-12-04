@@ -30,6 +30,13 @@
                 app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="@+id/frameLayout" android:id="@+id/constraintLayout4">
             <FrameLayout
+                    android:background="#eee"
+                    android:alpha="0.3"
+                    android:layout_width="0dp" android:layout_height="0dp"
+                    app:layout_constraintStart_toStartOf="parent" app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+            <FrameLayout
                     android:onClick="@{(v) -> UtilsKt.download(v, vm.post.content)}"
                     android:backgroundTint="@color/colorPrimary"
                     android:background="@drawable/ic_file_download_black_24dp"
@@ -40,6 +47,7 @@
                     android:layout_marginEnd="8dp"
             />
             <io.untaek.animal_new.component.TextWithIcon
+                    android:alpha="1"
                     app:icon="@{vm.post.like ? @drawable/ic_fill_bone : @drawable/ic_bone}"
                     app:count="@{vm.post.total_likes}"
                     app:color="@color/colorPrimary"

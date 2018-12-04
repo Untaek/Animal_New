@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
+import com.robertlevonyan.views.chip.Chip
 import io.untaek.animal_new.Reactive
 import io.untaek.animal_new.activity.postdetail.PostDetailActivity
 import io.untaek.animal_new.activity.UserDetailActivity
@@ -40,6 +41,15 @@ class TimelineAdapter(fragmentActivity: FragmentActivity): RecyclerView.Adapter<
     open class ViewHolder(private val binding: ItemListTimelineBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Post) {
             binding.post = item
+            binding.chips.removeAllViewsInLayout()
+            binding.post!!.tags.values.forEach {
+                val chip = com.google.android.material.chip.Chip(binding.chips.context).apply {
+                    text = it
+                    setChipBackgroundColorResource(android.R.color.holo_green_light)
+                }
+                binding.chips.addView(chip)
+            }
+
         }
     }
 
