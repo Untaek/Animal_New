@@ -33,6 +33,7 @@ object Reactive {
     const val TOTAL_LIKES = "total_likes"
     const val TOTAL_FOLLOWERS = "total_followers"
     const val TOTAL_COMMENTS = "total_comments"
+    const val TOTAL_POSTS = "total_posts"
     const val LIKES = "likes"
     const val CONTENT = "content"
     const val MIME = "mime"
@@ -69,7 +70,7 @@ object Reactive {
             val fileName = "${user.uid}@${Date().time}.jpg"
 
             val stateId = (System.currentTimeMillis() % 100_000_000).toInt()
-            sub.onNext(UploadState(stateId, State.Start,0, null, null, null))
+            sub.onNext(UploadState(stateId, State.Start,0, uri.toString(), null, null))
 
             val ref = FirebaseStorage
                 .getInstance(STORAGE_BUCKET_ASIA)
@@ -78,7 +79,7 @@ object Reactive {
             ref.putFile(uri)
                 .addOnProgressListener {
                     val progress = ((it.bytesTransferred.toFloat() / it.totalByteCount.toFloat()) * 100).toInt()
-                    sub.onNext(UploadState(stateId, State.Pending, progress, null, null, null))
+                    sub.onNext(UploadState(stateId, State.Pending, progress, uri.toString(), null, null))
                 }
                 .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
                     if(!task.isSuccessful){
@@ -90,7 +91,7 @@ object Reactive {
                     val downloadUri = it
                     val content = Content(mime, fileName, downloadUri.toString(), size.x, size.y)
 
-                    sub.onNext(UploadState(stateId, State.Pending, 100, it.toString(), content, null))
+                    sub.onNext(UploadState(stateId, State.Pending, 100, uri.toString(), content, null))
                     sub.onComplete()
                 }
                 .addOnFailureListener {
@@ -102,12 +103,26 @@ object Reactive {
         Observable.create { sub ->
             val post = Post("", currentUser(), description, uploadState.content!!, tags)
 
-            FirebaseFirestore
+            val userRef = FirebaseFirestore
+                .getInstance()
+                .collection(USERS)
+                .document(currentUser().id)
+
+            val postRef = FirebaseFirestore
                 .getInstance()
                 .collection(POSTS)
-                .add(post)
+                .document()
+
+            FirebaseFirestore
+                .getInstance()
+                .runTransaction { t ->
+                    val newPostCount = t.get(userRef).getLong(TOTAL_POSTS)!!.plus(1)
+
+                    t.update(userRef, TOTAL_POSTS, newPostCount)
+                    t.set(postRef, post)
+                }
                 .addOnSuccessListener {
-                    sub.onNext(uploadState.copy(state = State.Finish, post = post.copy(id = it.id)))
+                    sub.onNext(uploadState.copy(state = State.Finish, post = post.copy(id = postRef.id)))
                     sub.onComplete()
                 }
                 .addOnFailureListener {
