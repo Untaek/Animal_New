@@ -130,6 +130,22 @@ object Reactive {
                 }
         }
 
+    private fun loadSinglePostObservable(postId: String): Observable<Post> =
+        Observable.create { sub ->
+            FirebaseFirestore.getInstance()
+                .collection(POSTS)
+                .document(postId)
+                .get()
+                .addOnSuccessListener { doc ->
+                    val post = doc.toObject(Post::class.java)!!.apply { id = doc.id }
+                    sub.onNext(post)
+                    sub.onComplete()
+                }
+                .addOnFailureListener {
+                    sub.onError(it)
+                }
+        }
+
     private fun loadFirstTimelineObservable(limit: Int) =
         Observable.create(ObservableOnSubscribe<Pair<LastSeen, List<Post>>> { sub ->
             FirebaseFirestore.getInstance()
@@ -362,6 +378,12 @@ object Reactive {
         observer.connect()
 
         return result
+    }
+
+    fun loadPost(postId: String): Observable<Post> {
+        return loadSinglePostObservable(postId)
+            .flatMap(this::getLikeObservable)
+            .subscribeOn(AndroidSchedulers.mainThread())
     }
 
     fun loadFirstTimeline(limit: Int): Observable<Pair<DocumentSnapshot?, List<Post>>> {

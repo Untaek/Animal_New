@@ -73,13 +73,14 @@ class TimelineAdapter(fragmentActivity: FragmentActivity): RecyclerView.Adapter<
             Toast.makeText(view.context, "onClickContent", Toast.LENGTH_SHORT).show()
             val intent = Intent(view.context, PostDetailActivity::class.java).apply {
                 putExtra("post", post)
+                putExtra(PostDetailActivity.FROM, PostDetailActivity.FROM_CONTENT)
             }
             view.context.startActivity(intent)
         }
         fun onClickComment(view: View, post: Post) {
             val intent = Intent(view.context, PostDetailActivity::class.java).apply {
                 putExtra("post", post)
-                putExtra("comment", true)
+                putExtra(PostDetailActivity.FROM, PostDetailActivity.FROM_COMMENT)
             }
             view.context.startActivity(intent)
         }

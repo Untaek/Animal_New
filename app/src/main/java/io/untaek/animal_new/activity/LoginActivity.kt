@@ -33,6 +33,7 @@ class LoginActivity : AppCompatActivity() {
                     .setAvailableProviders(providers)
                     .setTheme(R.style.Theme_AppCompat_Light_NoActionBar)
                     .setLogo(R.drawable.ic_bone)
+                    .setIsSmartLockEnabled(false)
                     .build(),
                 RC_SIGN_IN
             )
