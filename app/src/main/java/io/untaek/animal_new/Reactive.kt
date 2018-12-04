@@ -1,11 +1,15 @@
 package io.untaek.animal_new
 
-import android.annotation.SuppressLint
+import android.net.Uri
 import android.util.Log
+import com.google.android.gms.tasks.Continuation
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.UploadTask
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -15,14 +19,103 @@ import io.reactivex.schedulers.Schedulers
 import io.untaek.animal_new.type.Comment
 import io.untaek.animal_new.type.Post
 import io.untaek.animal_new.type.User
-import io.untaek.animal_new.type.UserDetail
 import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 object Reactive {
+    private const val STORAGE_BUCKET_ASIA = "gs://animal-f6c09"
+
+    const val POSTS = "posts"
+    const val USERS = "users"
+    const val COMMENTS = "comments"
+
+    const val TIME_STAMP = "time_stamp"
+    const val TOTAL_LIKES = "total_likes"
+    const val TOTAL_FOLLOWERS = "total_followers"
+    const val TOTAL_COMMENTS = "total_comments"
+    const val LIKES = "likes"
+    const val CONTENT = "content"
+    const val MIME = "mime"
+    const val PICTURE_URL = "picture_url"
+    const val DESCRIPTION = "description"
+    const val TEXT = "text"
+    const val NAME = "name"
+
+    enum class State{
+        Start,
+        Pending,
+        Finish
+    }
+
     data class LastSeen(val documentSnapshot: DocumentSnapshot?)
     data class LikeState(val post: Post, val loading: Boolean)
+    data class UploadState(val id: Int, val state: State, val progress: Int, val url: String?, val content: Content?, val post: Post?)
+
+    private fun currentUser(): User {
+        val user = FirebaseAuth.getInstance().currentUser
+
+        return user?.let {
+            User(it.uid, it.displayName!!, it.photoUrl.toString())
+        } ?: User()
+    }
+
+    private fun fileUploadObservable(vm: UploadViewModel): Observable<UploadState> =
+        Observable.create { sub ->
+            val user = FirebaseAuth.getInstance().currentUser!!
+
+            val uri = vm.currentUri!!
+            val size = vm.currentSize!!
+            val mime = vm.currentMime!!
+            val fileName = "${user.uid}@${Date().time}.jpg"
+
+            val stateId = (System.currentTimeMillis() % 100_000_000).toInt()
+            sub.onNext(UploadState(stateId, State.Start,0, null, null, null))
+
+            val ref = FirebaseStorage
+                .getInstance(STORAGE_BUCKET_ASIA)
+                .getReference(fileName)
+
+            ref.putFile(uri)
+                .addOnProgressListener {
+                    val progress = ((it.bytesTransferred.toFloat() / it.totalByteCount.toFloat()) * 100).toInt()
+                    sub.onNext(UploadState(stateId, State.Pending, progress, null, null, null))
+                }
+                .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                    if(!task.isSuccessful){
+                        throw Exception()
+                    }
+                    return@Continuation ref.downloadUrl
+                })
+                .addOnSuccessListener {
+                    val downloadUri = it
+                    val content = Content(mime, fileName, downloadUri.toString(), size.x, size.y)
+
+                    sub.onNext(UploadState(stateId, State.Pending, 100, it.toString(), content, null))
+                    sub.onComplete()
+                }
+                .addOnFailureListener {
+                    sub.onError(it)
+                }
+        }
+
+    private fun writePostObservable(uploadState: UploadState, description: String, tags: Map<String, String>): Observable<UploadState> =
+        Observable.create { sub ->
+            val post = Post("", currentUser(), description, uploadState.content!!, tags)
+
+            FirebaseFirestore
+                .getInstance()
+                .collection(POSTS)
+                .add(post)
+                .addOnSuccessListener {
+                    sub.onNext(uploadState.copy(state = State.Finish, post = post.copy(id = it.id)))
+                    sub.onComplete()
+                }
+                .addOnFailureListener {
+                    sub.onError(it)
+                }
+        }
 
     private fun loadUserDetail(user : User) : UserDetail =
         Observable.create { sub ->
@@ -41,8 +134,8 @@ object Reactive {
     private fun loadFirstTimelineObservable(limit: Int) =
         Observable.create(ObservableOnSubscribe<Pair<LastSeen, List<Post>>> { sub ->
             FirebaseFirestore.getInstance()
-                .collection("posts")
-                .orderBy("time_stamp", Query.Direction.DESCENDING)
+                .collection(POSTS)
+                .orderBy(TIME_STAMP, Query.Direction.DESCENDING)
                 .limit(limit.toLong())
                 .get()
                 .addOnSuccessListener {
@@ -58,8 +151,8 @@ object Reactive {
     private fun loadTimelinePageObservable(limit: Int, lastSeen: DocumentSnapshot) =
         Observable.create(ObservableOnSubscribe<Pair<LastSeen, List<Post>>> { sub ->
             FirebaseFirestore.getInstance()
-                .collection("posts")
-                .orderBy("time_stamp", Query.Direction.DESCENDING)
+                .collection(POSTS)
+                .orderBy(TIME_STAMP, Query.Direction.DESCENDING)
                 .startAfter(lastSeen)
                 .limit(limit.toLong())
                 .get()
@@ -110,9 +203,9 @@ object Reactive {
     private fun getLikeObservable(post: Post): Observable<Post> {
         return Observable.create { sub ->
             FirebaseFirestore.getInstance()
-                .collection("users")
-                .document("dbsdlswp")
-                .collection("likes")
+                .collection(USERS)
+                .document(currentUser().id)
+                .collection(LIKES)
                 .document(post.id)
                 .get()
                 .addOnSuccessListener {
@@ -125,10 +218,10 @@ object Reactive {
     private fun getPopularCommentsObservable(post: Post): Observable<Post> {
         return Observable.create { sub ->
             FirebaseFirestore.getInstance()
-                .collection("posts")
+                .collection(POSTS)
                 .document(post.id)
-                .collection("comments")
-                .orderBy("time_stamp", Query.Direction.DESCENDING)
+                .collection(COMMENTS)
+                .orderBy(TIME_STAMP, Query.Direction.DESCENDING)
                 .limit(2)
                 .get()
                 .addOnSuccessListener {
@@ -148,10 +241,10 @@ object Reactive {
     private fun loadFirstCommentsObservable(post: Post, limit: Int): Observable<Pair<LastSeen, ArrayList<Comment>>> {
         return Observable.create { sub ->
             FirebaseFirestore.getInstance()
-                .collection("posts")
+                .collection(POSTS)
                 .document(post.id)
-                .collection("comments")
-                .orderBy("time_stamp", Query.Direction.DESCENDING)
+                .collection(COMMENTS)
+                .orderBy(TIME_STAMP, Query.Direction.DESCENDING)
                 .limit(limit.toLong())
                 .get()
                 .addOnSuccessListener {
@@ -171,10 +264,10 @@ object Reactive {
     private fun loadCommentsPageObservable(post: Post, limit: Int, lastSeen: DocumentSnapshot): Observable<Pair<LastSeen, ArrayList<Comment>>> {
         return Observable.create { sub ->
             FirebaseFirestore.getInstance()
-                .collection("posts")
+                .collection(POSTS)
                 .document(post.id)
-                .collection("comments")
-                .orderBy("time_stamp", Query.Direction.DESCENDING)
+                .collection(COMMENTS)
+                .orderBy(TIME_STAMP, Query.Direction.DESCENDING)
                 .startAfter(lastSeen)
                 .limit(limit.toLong())
                 .get()
@@ -208,20 +301,20 @@ object Reactive {
 
             val fs = FirebaseFirestore.getInstance()
             val postRef = fs
-                .collection(Fire.POSTS)
+                .collection(POSTS)
                 .document(post.id)
 
-            val ownerRef = fs.collection(Fire.USERS).document(post.user.id)
+            val ownerRef = fs.collection(USERS).document(post.user.id)
 
-            val userLikesRef = fs.collection(Fire.USERS)
-                .document("dbsdlswp")
+            val userLikesRef = fs.collection(USERS)
+                .document(currentUser().id)
                 .collection(Fire.LIKES)
                 .document(post.id)
 
-            //FirebaseAuth.getInstance().currentUser?.let { _ ->
+            FirebaseAuth.getInstance().currentUser?.let { _ ->
                 fs.runTransaction { t ->
-                    val newPostTotalLikesValue = t.get(postRef).getLong(Fire.TOTAL_LIKES)?.plus(likeOrDislike)
-                    val newUserTotalLikesValue = t.get(ownerRef).getLong(Fire.TOTAL_LIKES)?.plus(likeOrDislike)
+                    val newPostTotalLikesValue = t.get(postRef).getLong(TOTAL_LIKES)?.plus(likeOrDislike)
+                    val newUserTotalLikesValue = t.get(ownerRef).getLong(TOTAL_LIKES)?.plus(likeOrDislike)
 
                     if(localLike) {
                         t.set(userLikesRef, HashMap())
@@ -229,8 +322,8 @@ object Reactive {
                     else {
                         t.delete(userLikesRef)
                     }
-                    t.update(postRef, Fire.TOTAL_LIKES, newPostTotalLikesValue)
-                    t.update(ownerRef, Fire.TOTAL_LIKES, newUserTotalLikesValue)
+                    t.update(postRef, TOTAL_LIKES, newPostTotalLikesValue)
+                    t.update(ownerRef, TOTAL_LIKES, newUserTotalLikesValue)
 
 
                     newPostTotalLikesValue
@@ -248,7 +341,7 @@ object Reactive {
                         Log.d("Fire", "like exception", it.exception)
                     }
                 }
-           // }
+            }
         }
     }
 
@@ -256,21 +349,21 @@ object Reactive {
         return Observable.create { sub ->
             val postRef = FirebaseFirestore
                 .getInstance()
-                .collection("posts")
+                .collection(POSTS)
                 .document(post.id)
 
             val commentRef = postRef
-                .collection("comments")
+                .collection(COMMENTS)
                 .document()
 
-            val comment = Comment(commentRef.id, User(), text)
+            val comment = Comment(commentRef.id, currentUser(), text)
 
             FirebaseFirestore
                 .getInstance()
                 .runTransaction { t ->
-                    val newCommentsAmount = t.get(postRef).getLong("total_comments")!!.plus(1)
+                    val newCommentsAmount = t.get(postRef).getLong(TOTAL_COMMENTS)!!.plus(1)
 
-                    t.update(postRef, "total_comments", newCommentsAmount)
+                    t.update(postRef, TOTAL_COMMENTS, newCommentsAmount)
                     t.set(commentRef, comment)
                 }
                 .addOnSuccessListener {
@@ -286,6 +379,26 @@ object Reactive {
     /************************
      * Exposed functions
      ************************/
+
+    fun uploadContent(vm: UploadViewModel, description: String, tags: Map<String, String>): Observable<UploadState> {
+        val observer= fileUploadObservable(vm).publish()
+
+        val progressObserver = observer
+            .map { it }
+
+        val resultObserver = progressObserver
+            .lastElement()
+            .toObservable()
+            .flatMap { writePostObservable(it, description, tags) }
+
+        val result = ConnectableObservable
+            .merge(progressObserver, resultObserver)
+            .subscribeOn(AndroidSchedulers.mainThread())
+
+        observer.connect()
+
+        return result
+    }
 
     @SuppressLint("CheckResult")
     fun loadMyPage(limit: Int, lastSeen: DocumentSnapshot): Observable<Pair<DocumentSnapshot?, List<Post>>> {
@@ -352,7 +465,6 @@ object Reactive {
         return result
     }
 
-    @SuppressLint("CheckResult")
     fun loadTimelinePage(limit: Int, lastSeen: DocumentSnapshot): Observable<Pair<DocumentSnapshot?, List<Post>>> {
         Log.d("Reactive", "call loadTimelinePage")
         val observer = loadTimelinePageObservable(limit, lastSeen).publish()

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="io.untaek.animal_new"
->
+          package="io.untaek.animal_new">
 
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -16,7 +15,8 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
         <activity android:name=".activity.SplashActivity"
-                  android:theme="@style/Splash">
+                  android:theme="@style/Splash"
+        >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -38,8 +38,14 @@
                 android:grantUriPermissions="true">
             <meta-data
                     android:name="android.support.FILE_PROVIDER_PATHS"
-                    android:resource="@xml/file_provider_paths" />
+                    android:resource="@xml/file_provider_paths"/>
         </provider>
+
+        <activity
+                android:name=".activity.WritePostDetailActivity"
+                android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
+        >
+        </activity>
     </application>
 
 </manifest>

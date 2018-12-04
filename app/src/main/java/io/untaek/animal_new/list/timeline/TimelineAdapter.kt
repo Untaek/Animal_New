@@ -60,10 +60,7 @@ class TimelineAdapter(fragmentActivity: FragmentActivity): RecyclerView.Adapter<
         }
         fun onClickLike(view: View, post: Post) {
             Toast.makeText(view.context, "onClickLike", Toast.LENGTH_SHORT).show()
-            val i = vm.timeline.indexOf(post)
-            Reactive.like(post).subscribe {
-                vm.timeline[i] = it.post
-            }
+            vm.clickLike(post)
         }
         fun onClickContent(view: View, post: Post) {
             Toast.makeText(view.context, "onClickContent", Toast.LENGTH_SHORT).show()
@@ -73,7 +70,11 @@ class TimelineAdapter(fragmentActivity: FragmentActivity): RecyclerView.Adapter<
             view.context.startActivity(intent)
         }
         fun onClickComment(view: View, post: Post) {
-
+            val intent = Intent(view.context, PostDetailActivity::class.java).apply {
+                putExtra("post", post)
+                putExtra("comment", true)
+            }
+            view.context.startActivity(intent)
         }
     }
 

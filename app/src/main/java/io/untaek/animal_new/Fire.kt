@@ -49,7 +49,9 @@ object Fire {
         val uploading = Uploading(uri = uri)
         vm.addUploadState(uploading)
 
-        val fileName = "USER_ID@${Date().time}.jpg"
+        val user = FirebaseAuth.getInstance().currentUser!!
+
+        val fileName = "${user.uid}@${Date().time}.jpg"
 
         val ref = FirebaseStorage.getInstance("gs://animal-f6c09").getReference(fileName)
         val userRef = FirebaseFirestore.getInstance().collection(POSTS).document()
@@ -73,7 +75,7 @@ object Fire {
                 val content = Content(mime, fileName, downloadUri.toString(), size.x, size.y)
 
                 userRef
-                    .set(Post(content = content))
+                    .set(Post(content = content, user = User(user.uid, user.displayName!!, user.photoUrl.toString())))
                     .addOnSuccessListener {
                     Log.d("FireFire", "upload finished $downloadUri")
                 }

@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import android.util.SparseArray
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
@@ -16,10 +17,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.databinding.Bindable
-import androidx.databinding.BindingAdapter
-import androidx.databinding.BindingMethod
-import androidx.databinding.ObservableArrayList
+import androidx.databinding.*
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -30,10 +28,12 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
+import io.untaek.animal_new.Reactive
 import io.untaek.animal_new.component.PickContentButton
 import io.untaek.animal_new.list.comment.CommentsAdapter
 import io.untaek.animal_new.list.mypage.MyPageAdapter
 import io.untaek.animal_new.list.timeline.TimelineAdapter
+import io.untaek.animal_new.list.upload.UploadAdapter
 import io.untaek.animal_new.type.Comment
 import io.untaek.animal_new.type.Content
 import io.untaek.animal_new.type.Post
@@ -74,6 +74,12 @@ fun bind_myPage(recyclerView: RecyclerView, items: ObservableArrayList<Post>){
 @BindingAdapter("bind_comment")
 fun bind2(recyclerView: RecyclerView, items: ObservableArrayList<Comment>){
     val adapter: CommentsAdapter = recyclerView.adapter as? CommentsAdapter ?: CommentsAdapter(recyclerView.context as FragmentActivity)
+    adapter.notifyDataSetChanged()
+}
+
+@BindingAdapter("bind_upload")
+fun bind3(recyclerView: RecyclerView, items: ObservableField<SparseArray<Reactive.UploadState>>) {
+    val adapter: UploadAdapter = recyclerView.adapter as? UploadAdapter ?: UploadAdapter(recyclerView.context as FragmentActivity)
     adapter.notifyDataSetChanged()
 }
 
@@ -149,6 +155,13 @@ fun load2(imageView: ImageView, content: Content) {
         .transition(DrawableTransitionOptions.withCrossFade(400))
         .apply(options)
         .thumbnail(0.1f)
+        .into(imageView)
+}
+
+@BindingAdapter("preview")
+fun load3(imageView: ImageView, uri: Uri) {
+    Glide.with(imageView)
+        .load(uri)
         .into(imageView)
 }
 

@@ -16,6 +16,7 @@
                 app:layout_constraintStart_toStartOf="parent" app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
             <com.jsibbold.zoomage.ZoomageView
+                    app:zoomage_restrictBounds="true"
                     android:layout_gravity="center_vertical"
                     android:id="@+id/imageView"
                     full_content="@{vm.post.content}"
