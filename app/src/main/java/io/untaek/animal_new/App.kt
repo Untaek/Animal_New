@@ -8,12 +8,14 @@ import com.google.firebase.iid.FirebaseInstanceId
 
 class App: Application(), FirebaseAuth.AuthStateListener {
     override fun onAuthStateChanged(auth: FirebaseAuth) {
-        auth.currentUser.let { user ->
+        Log.d("App Token", "AuthStateChanged")
+        auth.currentUser?.let { user ->
+            Log.d("App Token", "User Logined")
             FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener {
                 FirebaseDatabase
                     .getInstance()
                     .getReference("message_token")
-                    .child(user!!.uid)
+                    .child(user.uid)
                     .updateChildren(mapOf("token" to it.token))
                     .addOnSuccessListener {
                         Log.d(Messaging.TAG, "token saved")
@@ -27,5 +29,6 @@ class App: Application(), FirebaseAuth.AuthStateListener {
 
     override fun onCreate() {
         super.onCreate()
+        FirebaseAuth.getInstance().addAuthStateListener(this)
     }
 }
